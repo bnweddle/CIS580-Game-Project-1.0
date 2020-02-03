@@ -26,8 +26,7 @@ namespace GoalKeeper
 
         //The paddle variables
         Texture2D paddle;
-        Rectangle paddleRect;
-        BoundingRectangle paddlePosition;
+        BoundingRectangle bound;
         int paddleSpeed = 0;
 
         KeyboardState oldstate;
@@ -70,10 +69,10 @@ namespace GoalKeeper
             //same speed, random direction
             ballVelocity.Normalize();
 
-            paddleRect.X = 0;
-            paddleRect.Y = 0;
-            paddleRect.Width = 50;
-            paddleRect.Height = 250; 
+            bound.Width = 50;
+            bound.Height = 250;
+            bound.X = 0;
+            bound.Y = GraphicsDevice.Viewport.Height / 2 - bound.Height / 2;
 
             lives = 5;
 
@@ -126,29 +125,26 @@ namespace GoalKeeper
                 Exit();
             }
 
-            paddlePosition = new BoundingRectangle(paddleRect.X, paddleRect.Y, paddleRect.Width, paddleRect.Height);
-
             // increasing or/and decreasing the speed of the paddle
             if (newState.IsKeyDown(Keys.Up) && !oldstate.IsKeyDown(Keys.Down))
             {
-                paddleSpeed -= 1;
+                bound.Y -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                //move up
             }
             if (newState.IsKeyDown(Keys.Down) && !oldstate.IsKeyDown(Keys.Up))
             {
-                paddleSpeed += 1;
+                bound.Y += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                //move down
             }
-
-            
-            paddleRect.Y += paddleSpeed;
 
             // Making sure paddle doesn't go off screen
-            if (paddleRect.Y < 0)
+            if (bound.Y < 0)
             {
-                paddleRect.Y = 0;
+                bound.Y = 0;
             }
-            if (paddleRect.Y > GraphicsDevice.Viewport.Height - paddleRect.Height)
+            if (bound.Y > GraphicsDevice.Viewport.Height - bound.Height)
             {
-                paddleRect.Y = GraphicsDevice.Viewport.Height - paddleRect.Height;
+                bound.Y = GraphicsDevice.Viewport.Height - bound.Height;
             }
 
             // TODO: Add your update logic here
@@ -178,7 +174,7 @@ namespace GoalKeeper
                 float delta = 0 - ballPosition.X;
                 ballPosition.X += 2 * delta;
 
-                if (!CollisionDetected(paddlePosition, ballBound))
+                if (!CollisionDetected(bound, ballBound))
                 {
                     lives--;
                 }
@@ -231,7 +227,8 @@ namespace GoalKeeper
             {
                 ballRect = new Rectangle((int)ballPosition.X, (int)ballPosition.Y, 100, 100);
                 spriteBatch.Draw(ball, ballRect, Color.White);
-                spriteBatch.Draw(paddle, paddleRect, Color.Red);
+
+                spriteBatch.Draw(paddle, bound, Color.Red);
 
                 int start = 50;
                 for (int i = 0; i < lives; i++)
@@ -248,7 +245,7 @@ namespace GoalKeeper
 
         void BeginGame()
         {
-            // Got general outline of code from 
+            // Got general idea for outline of code from 
             // https://docs.microsoft.com/en-us/windows/uwp/get-started/get-started-tutorial-game-mg2d
             KeyboardState keyboardState = Keyboard.GetState();
 

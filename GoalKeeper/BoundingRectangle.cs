@@ -2,6 +2,7 @@
  * BoundingRectangle struct
  * Used to see if Rectangles collide
  * */
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace GoalKeeper
                 || this.Y > other.Y + other.Height
                 || this.Y + this.Height < other.Y);
 
+        }
+
+        public static implicit operator Rectangle(BoundingRectangle BR)
+        {
+            return new Rectangle((int)BR.X, (int)BR.Y, (int)BR.Width, (int)BR.Height);
         }
     }
 }
