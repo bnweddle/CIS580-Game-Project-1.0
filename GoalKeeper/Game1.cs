@@ -138,17 +138,17 @@ namespace GoalKeeper
                 paddleSpeed += 1;
             }
 
-            //********************* PaddleRect with PaddlePosition ************************8
-            paddlePosition.Y += paddleSpeed;
+            
+            paddleRect.Y += paddleSpeed;
 
             // Making sure paddle doesn't go off screen
-            if (paddlePosition.Y < 0)
+            if (paddleRect.Y < 0)
             {
-                paddlePosition.Y = 0;
+                paddleRect.Y = 0;
             }
-            if (paddlePosition.Y > GraphicsDevice.Viewport.Height - paddlePosition.Height)
+            if (paddleRect.Y > GraphicsDevice.Viewport.Height - paddleRect.Height)
             {
-                paddlePosition.Y = GraphicsDevice.Viewport.Height - paddlePosition.Height;
+                paddleRect.Y = GraphicsDevice.Viewport.Height - paddleRect.Height;
             }
 
             // TODO: Add your update logic here
@@ -178,13 +178,7 @@ namespace GoalKeeper
                 float delta = 0 - ballPosition.X;
                 ballPosition.X += 2 * delta;
 
-                //Replace this with Bounding structs??
-                //Decrease lives if it hits the right wall and not the paddle
-                /*if (!(ballRect.Intersects(paddleRect)))
-                {
-                    lives--;
-                }*/
-                if(CollidesWithRect(paddlePosition, ballBound))
+                if (!CollisionDetected(paddlePosition, ballBound))
                 {
                     lives--;
                 }
@@ -197,6 +191,8 @@ namespace GoalKeeper
                 float delta = graphics.PreferredBackBufferWidth - 100 - ballPosition.X;
                 ballPosition.X += 2 * delta;
             }
+
+            
 
             newState = oldstate;
             base.Update(gameTime);
@@ -279,34 +275,31 @@ namespace GoalKeeper
             }
         }
 
-        
-        public bool CollidesWithRect(BoundingRectangle rect, BoundingCircle cir)
+        public bool CollisionDetected(BoundingRectangle r, BoundingCircle c)
         {
-            //P is the Center, R is the Radius of the Circle
-            //R ^ 2 >= (R.X - P.X) ^ 2 + (R.Y - P.Y) ^ 2
-            float nearestX = Clamp(cir.X, rect.X, rect.X + rect.Width);
-            float nearestY = Clamp(cir.Y, rect.Y, rect.X + rect.Height);
+            // Code for Collison Detected found at 
+            // http://www.jeffreythompson.org/collision-detection/circle-rect.php
+            // temporary variables to set edges for testing
+            float testX = c.X;
+            float testY = c.Y;
 
-            // Found this equation from 
-            // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
-            // Calculate the distance between the circle's center and this closest point
-            float distanceX = cir.X - nearestX;
-            float distanceY = cir.Y - nearestY;
+            // which edge is closest?
+            if (c.X < r.X) testX = r.X;      // test left edge
+            else if (c.X > r.X + r.Width) testX = r.X + r.Width;   // right edge
+            if (c.Y < r.Y) testY = r.Y;      // top edge
+            else if (c.Y > r.Y + r.Height) testY = r.Y + r.Height;   // bottom edge
 
-            // If the distance is less than the circle's radius, an intersection occurs
-            float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
-            return distanceSquared < (cir.Radius * cir.Radius);
+            // get distance from closest edges
+            float distX = c.X - testX;
+            float distY = c.Y - testY;
+            float distance = (distX * distX) + (distY * distY);
 
-        }
-
-        public float Clamp(float min, float max, float value)
-        {
-            if (value < min)
-                return min;
-            if (value > max)
-                return max;
-
-            return value;
+            // if the distance is less than the radius, collision!
+            if (distance <= c.Radius * c.Radius)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
