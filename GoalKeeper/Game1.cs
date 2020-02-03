@@ -21,12 +21,13 @@ namespace GoalKeeper
         Rectangle ballRect;
         Random random = new Random();
         Vector2 ballPosition = Vector2.Zero;
+        BoundingCircle ballBound;
         Vector2 ballVelocity;
-        Vector2 startSpeed;
 
         //The paddle variables
         Texture2D paddle;
         Rectangle paddleRect;
+        BoundingRectangle paddlePosition;
         int paddleSpeed = 0;
 
         KeyboardState oldstate;
@@ -72,7 +73,7 @@ namespace GoalKeeper
             paddleRect.X = 0;
             paddleRect.Y = 0;
             paddleRect.Width = 50;
-            paddleRect.Height = 250;
+            paddleRect.Height = 250; 
 
             lives = 5;
 
@@ -125,6 +126,8 @@ namespace GoalKeeper
                 Exit();
             }
 
+            paddlePosition = new BoundingRectangle(paddleRect.X, paddleRect.Y, paddleRect.Width, paddleRect.Height);
+
             // increasing or/and decreasing the speed of the paddle
             if (newState.IsKeyDown(Keys.Up) && !oldstate.IsKeyDown(Keys.Down))
             {
@@ -135,21 +138,23 @@ namespace GoalKeeper
                 paddleSpeed += 1;
             }
 
-            paddleRect.Y += paddleSpeed;
+            //********************* PaddleRect with PaddlePosition ************************8
+            paddlePosition.Y += paddleSpeed;
 
             // Making sure paddle doesn't go off screen
-            if (paddleRect.Y < 0)
+            if (paddlePosition.Y < 0)
             {
-                paddleRect.Y = 0;
+                paddlePosition.Y = 0;
             }
-            if (paddleRect.Y > GraphicsDevice.Viewport.Height - paddleRect.Height)
+            if (paddlePosition.Y > GraphicsDevice.Viewport.Height - paddlePosition.Height)
             {
-                paddleRect.Y = GraphicsDevice.Viewport.Height - paddleRect.Height;
+                paddlePosition.Y = GraphicsDevice.Viewport.Height - paddlePosition.Height;
             }
 
             // TODO: Add your update logic here
-            startSpeed = (float)gameTime.ElapsedGameTime.TotalMilliseconds * ballVelocity;
-            ballPosition += startSpeed;
+            ballPosition += (float)gameTime.ElapsedGameTime.TotalMilliseconds * ballVelocity;
+            ballBound = new BoundingCircle(ballPosition.X, ballPosition.Y, 50);
+
 
             //Check for wall collisons, depends on where your wall is
             if (ballPosition.Y < 0) //top of screen
@@ -173,8 +178,13 @@ namespace GoalKeeper
                 float delta = 0 - ballPosition.X;
                 ballPosition.X += 2 * delta;
 
+                //Replace this with Bounding structs??
                 //Decrease lives if it hits the right wall and not the paddle
-                if (!(ballRect.Intersects(paddleRect)))
+                /*if (!(ballRect.Intersects(paddleRect)))
+                {
+                    lives--;
+                }*/
+                if(CollidesWithRect(paddlePosition, ballBound))
                 {
                     lives--;
                 }
@@ -267,6 +277,36 @@ namespace GoalKeeper
                     endGame = false;
                 }
             }
+        }
+
+        
+        public bool CollidesWithRect(BoundingRectangle rect, BoundingCircle cir)
+        {
+            //P is the Center, R is the Radius of the Circle
+            //R ^ 2 >= (R.X - P.X) ^ 2 + (R.Y - P.Y) ^ 2
+            float nearestX = Clamp(cir.X, rect.X, rect.X + rect.Width);
+            float nearestY = Clamp(cir.Y, rect.Y, rect.X + rect.Height);
+
+            // Found this equation from 
+            // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
+            // Calculate the distance between the circle's center and this closest point
+            float distanceX = cir.X - nearestX;
+            float distanceY = cir.Y - nearestY;
+
+            // If the distance is less than the circle's radius, an intersection occurs
+            float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+            return distanceSquared < (cir.Radius * cir.Radius);
+
+        }
+
+        public float Clamp(float min, float max, float value)
+        {
+            if (value < min)
+                return min;
+            if (value > max)
+                return max;
+
+            return value;
         }
     }
 }
