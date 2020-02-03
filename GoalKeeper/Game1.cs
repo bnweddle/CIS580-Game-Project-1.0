@@ -182,7 +182,12 @@ namespace GoalKeeper
                 {
                     lives--;
                 }
-                // how to increase and decrease speed???
+                else
+                {
+                    //Increase speed;
+                    ballVelocity.X += 0.25f;
+                }
+ 
             }
 
             if (ballPosition.X > graphics.PreferredBackBufferWidth - 100) // Side of screen
@@ -257,6 +262,7 @@ namespace GoalKeeper
             {
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
+                    ballVelocity.Normalize();
                     beginGame = true;
                     endGame = false;
                 }
@@ -267,8 +273,8 @@ namespace GoalKeeper
             if (endGame)
             {
                 if (keyboardState.IsKeyDown(Keys.Enter))
-                {
-                    // how to reset speed to normal 
+                { 
+                    ballVelocity.Normalize();
                     lives = 5;
                     endGame = false;
                 }
