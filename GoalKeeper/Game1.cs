@@ -27,14 +27,14 @@ namespace GoalKeeper
         //The paddle variables
         Texture2D paddle;
         BoundingRectangle bound;
-        int paddleSpeed = 0;
 
         KeyboardState oldstate;
         KeyboardState newState;
 
-        //To keep track of lives
+        //To keep track of lives and levels
         Texture2D heart;
         int lives;
+        int levels;
 
         // Whether the game is over or has started
         bool beginGame;
@@ -95,7 +95,7 @@ namespace GoalKeeper
             paddle = Content.Load<Texture2D>("onepixel");
             heart = Content.Load<Texture2D>("heart");
             // The image before starting the game
-            backgroundStart = Content.Load<Texture2D>("start");
+            backgroundStart = Content.Load<Texture2D>("levels");
             backgroundEnd = Content.Load<Texture2D>("end");
             // TODO: use this.Content to load your game content here
         }
@@ -180,8 +180,15 @@ namespace GoalKeeper
                 }
                 else
                 {
-                    //Increase speed;
-                    ballVelocity.X += 0.25f;
+                    if(levels == 2)
+                    {
+                        ballVelocity.X += 0.25f;
+                    }
+                    if(levels == 3)
+                    {
+                        ballVelocity.X += 0.25f;
+                        bound.Height -= 10;
+                    }                   
                 }
  
             }
@@ -257,20 +264,57 @@ namespace GoalKeeper
             // Exit the keyboard handler method early, preventing the dino from jumping on the same keypress.
             if (!beginGame)
             {
-                if (keyboardState.IsKeyDown(Keys.Space))
+                Keys[] pressed = keyboardState.GetPressedKeys();
+                if (pressed.Length >= 1)
                 {
+                    if (pressed[0] == Keys.D1 || pressed[0] == Keys.NumPad1)
+                    {
+                        bound.Height = 250;
+                        levels = 1;
+                        beginGame = true;
+                    }
+                    else if (pressed[0] == Keys.D2 || pressed[0] == Keys.NumPad2)
+                    {
+                        bound.Height = 200;
+                        levels = 2;
+                        beginGame = true;
+                    }
+                    else if (pressed[0] == Keys.D3 || pressed[0] == Keys.NumPad3)
+                    {
+                        bound.Height = 150;
+                        levels = 3;
+                        beginGame = true;
+                    }
+                    else
+                    {
+                        Exit();
+                    }
+
                     ballVelocity.Normalize();
-                    beginGame = true;
                     endGame = false;
-                }
-                return;
+
+                    return;
+                }        
             }
 
             // Restart the game if Enter is pressed
             if (endGame)
             {
                 if (keyboardState.IsKeyDown(Keys.Enter))
-                { 
+                {
+                    if(levels == 1)
+                    {
+                        bound.Height = 250;
+                    }
+                    else if(levels == 2)
+                    {
+                        bound.Height = 200;
+                    }
+                    else
+                    {
+                        bound.Height = 150;
+                    }
+                    
                     ballVelocity.Normalize();
                     lives = 5;
                     endGame = false;
