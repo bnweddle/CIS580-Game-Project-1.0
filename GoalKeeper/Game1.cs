@@ -16,17 +16,9 @@ namespace GoalKeeper
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        //The ball variables
-        Texture2D ball;
-        Rectangle ballRect;
-        Random random = new Random();
-        Vector2 ballPosition = Vector2.Zero;
-        BoundingCircle ballBound;
-        Vector2 ballVelocity;
-
-        //The paddle variables
-        Texture2D paddle;
-        BoundingRectangle bound;
+        Ball ball;
+        Paddle paddle;
+        public Random Random = new Random();
 
         KeyboardState oldstate;
         KeyboardState newState;
@@ -48,6 +40,8 @@ namespace GoalKeeper
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            paddle = new Paddle(this);
+            ball = new Ball(this);
         }
 
         /// <summary>
@@ -61,18 +55,9 @@ namespace GoalKeeper
             // TODO: Add your initialization logic here
             graphics.PreferredBackBufferWidth = 1042;
             graphics.PreferredBackBufferHeight = 768;
+            ball.Initialize();
+            paddle.Initialize();
             graphics.ApplyChanges();
-
-            ballVelocity = new Vector2(
-                (float)random.NextDouble(),
-                (float)random.NextDouble());
-            //same speed, random direction
-            ballVelocity.Normalize();
-
-            bound.Width = 50;
-            bound.Height = 250;
-            bound.X = 0;
-            bound.Y = GraphicsDevice.Viewport.Height / 2 - bound.Height / 2;
 
             lives = 5;
 
@@ -91,8 +76,8 @@ namespace GoalKeeper
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            ball = Content.Load<Texture2D>("ball");
-            paddle = Content.Load<Texture2D>("onepixel");
+            ball.LoadContent(Content);
+            paddle.LoadContent(Content);
             heart = Content.Load<Texture2D>("heart");
             // The image before starting the game
             backgroundStart = Content.Load<Texture2D>("levels");
@@ -125,81 +110,35 @@ namespace GoalKeeper
                 Exit();
             }
 
-            // increasing or/and decreasing the speed of the paddle
-            if (newState.IsKeyDown(Keys.Up) && !oldstate.IsKeyDown(Keys.Down))
-            {
-                bound.Y -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                //move up
-            }
-            if (newState.IsKeyDown(Keys.Down) && !oldstate.IsKeyDown(Keys.Up))
-            {
-                bound.Y += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                //move down
-            }
+            paddle.Update(gameTime);
+            ball.Update(gameTime);
 
-            // Making sure paddle doesn't go off screen
-            if (bound.Y < 0)
+            if (ball.Bounds.X < 0)
             {
-                bound.Y = 0;
-            }
-            if (bound.Y > GraphicsDevice.Viewport.Height - bound.Height)
-            {
-                bound.Y = GraphicsDevice.Viewport.Height - bound.Height;
-            }
-
-            // TODO: Add your update logic here
-            ballPosition += (float)gameTime.ElapsedGameTime.TotalMilliseconds * ballVelocity;
-            ballBound = new BoundingCircle(ballPosition.X, ballPosition.Y, 50);
-
-
-            //Check for wall collisons, depends on where your wall is
-            if (ballPosition.Y < 0) //top of screen
-            {
-                //invert direction 
-                ballVelocity.Y *= -1;
-                float delta = 0 - ballPosition.Y;
-                ballPosition.Y += 2 * delta;
-            }
-
-            if (ballPosition.Y > graphics.PreferredBackBufferHeight - 100) // Bottom of screen
-            {
-                ballVelocity.Y *= -1;
-                float delta = graphics.PreferredBackBufferHeight - 100 - ballPosition.Y;
-                ballPosition.Y += 2 * delta;
-            }
-
-            if (ballPosition.X < 0) // Side of Screen
-            {
-                ballVelocity.X *= -1;
-                float delta = 0 - ballPosition.X;
-                ballPosition.X += 2 * delta;
-
-                if (!CollisionDetected(bound, ballBound))
+                //Velocity = Vector2.Zero;
+                if (!CollisionDetected(paddle.Bounds, ball.Bounds))
                 {
                     lives--;
+                    ball.Velocity.X *= -1;
+                    float delta = ball.Bounds.Radius - ball.Bounds.X;
+                    ball.Bounds.X += 2 * delta;
                 }
                 else
                 {
-                    if(levels == 2)
+                    ball.Velocity.X *= -1;
+                    var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                    ball.Bounds.X += 2 * bounce;
+                    if (levels == 2)
                     {
-                        ballVelocity.X += 0.25f;
+                        ball.Velocity.X += 0.25f;
                     }
-                    if(levels == 3)
+                    if (levels == 3)
                     {
-                        ballVelocity.X += 0.25f;
-                        bound.Height -= 10;
-                    }                   
+                        ball.Velocity.X += 0.25f;
+                        paddle.Bounds.Height -= 10;
+                    }
                 }
- 
             }
-
-            if (ballPosition.X > graphics.PreferredBackBufferWidth - 100) // Side of screen
-            {
-                ballVelocity.X *= -1;
-                float delta = graphics.PreferredBackBufferWidth - 100 - ballPosition.X;
-                ballPosition.X += 2 * delta;
-            }
-
             
 
             newState = oldstate;
@@ -232,10 +171,9 @@ namespace GoalKeeper
             }
             else
             {
-                ballRect = new Rectangle((int)ballPosition.X, (int)ballPosition.Y, 100, 100);
-                spriteBatch.Draw(ball, ballRect, Color.White);
 
-                spriteBatch.Draw(paddle, bound, Color.Red);
+                ball.Draw(spriteBatch);
+                paddle.Draw(spriteBatch);
 
                 int start = 50;
                 for (int i = 0; i < lives; i++)
@@ -269,19 +207,19 @@ namespace GoalKeeper
                 {
                     if (pressed[0] == Keys.D1 || pressed[0] == Keys.NumPad1)
                     {
-                        bound.Height = 250;
+                        paddle.Bounds.Height = 250;
                         levels = 1;
                         beginGame = true;
                     }
                     else if (pressed[0] == Keys.D2 || pressed[0] == Keys.NumPad2)
                     {
-                        bound.Height = 200;
+                        paddle.Bounds.Height = 200;
                         levels = 2;
                         beginGame = true;
                     }
                     else if (pressed[0] == Keys.D3 || pressed[0] == Keys.NumPad3)
                     {
-                        bound.Height = 150;
+                        paddle.Bounds.Height = 150;
                         levels = 3;
                         beginGame = true;
                     }
@@ -290,7 +228,7 @@ namespace GoalKeeper
                         Exit();
                     }
 
-                    ballVelocity.Normalize();
+                    ball.Velocity.Normalize();
                     endGame = false;
 
                     return;
@@ -304,18 +242,18 @@ namespace GoalKeeper
                 {
                     if(levels == 1)
                     {
-                        bound.Height = 250;
+                        paddle.Bounds.Height = 250;
                     }
                     else if(levels == 2)
                     {
-                        bound.Height = 200;
+                        paddle.Bounds.Height = 200;
                     }
                     else
                     {
-                        bound.Height = 150;
+                        paddle.Bounds.Height = 150;
                     }
                     
-                    ballVelocity.Normalize();
+                    ball.Velocity.Normalize();
                     lives = 5;
                     endGame = false;
                 }
@@ -324,29 +262,9 @@ namespace GoalKeeper
 
         public bool CollisionDetected(BoundingRectangle r, BoundingCircle c)
         {
-            // Code for Collison Detected found at 
-            // http://www.jeffreythompson.org/collision-detection/circle-rect.php
-            // temporary variables to set edges for testing
-            float testX = c.X;
-            float testY = c.Y;
-
-            // which edge is closest?
-            if (c.X < r.X) testX = r.X;      // test left edge
-            else if (c.X > r.X + r.Width) testX = r.X + r.Width;   // right edge
-            if (c.Y < r.Y) testY = r.Y;      // top edge
-            else if (c.Y > r.Y + r.Height) testY = r.Y + r.Height;   // bottom edge
-
-            // get distance from closest edges
-            float distX = c.X - testX;
-            float distY = c.Y - testY;
-            float distance = (distX * distX) + (distY * distY);
-
-            // if the distance is less than the radius, collision!
-            if (distance <= c.Radius * c.Radius)
-            {
-                return true;
-            }
-            return false;
+            var closestX = Math.Max(r.X, Math.Min(c.X, r.X + r.Width));
+            var closestY = Math.Max(r.Y, Math.Min(c.Y, r.Y + r.Height));
+            return (Math.Pow(c.Radius, 2) >= Math.Pow(closestX - c.X, 2) + Math.Pow(closestY - c.Y, 2));
         }
     }
 }

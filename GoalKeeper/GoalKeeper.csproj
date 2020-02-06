@@ -42,9 +42,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Ball.cs" />
     <Compile Include="BoundingCircle.cs" />
     <Compile Include="BoundingRectangle.cs" />
+    <Compile Include="Collisons.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Paddle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

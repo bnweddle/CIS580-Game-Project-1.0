@@ -19,8 +19,15 @@ namespace GoalKeeper
 
         public float Radius;
 
-        //This is a getter
-        public Vector2 Center => new Vector2(X, Y);
+        public Vector2 Center
+        {
+            get => new Vector2(X, Y);
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+            }
+        }
 
         //Constructor
         public BoundingCircle(float x, float y, float radius)
@@ -35,6 +42,15 @@ namespace GoalKeeper
             // (A.Radius)^2 + (B.Radius)^2 <= (A.Center.X - B.Center.X)^2 + (A.Center.Y - B.Center.Y)^2
             return !(Math.Sqrt((double)this.Radius) + Math.Sqrt((double)other.Radius) <=
                 Math.Sqrt((double)this.Center.X - (double)other.Center.X) + Math.Sqrt((double)this.Center.Y - (double)other.Center.Y));
+        }
+
+        public static implicit operator Rectangle(BoundingCircle c)
+        {
+            return new Rectangle(
+                (int)(c.X - c.Radius),
+                (int)(c.Y - c.Radius),
+                (int)(2 * c.Radius),
+                (int)(2 * c.Radius));
         }
     }
 }
