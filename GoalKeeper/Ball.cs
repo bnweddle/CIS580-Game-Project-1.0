@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/* Author: Nathan Bean
+ * Modified By: Bethany Weddle
+ * Date: 2-7-20
+ * */
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,6 +10,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
+
 namespace GoalKeeper
 {
     public class Ball
@@ -29,6 +36,9 @@ namespace GoalKeeper
         /// The ball's velocity vector
         /// </summary>
         public Vector2 Velocity;
+
+
+        SoundEffect bounceX;
 
         /// <summary>
         /// Creates a new ball
@@ -69,6 +79,7 @@ namespace GoalKeeper
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("ball");
+            bounceX = content.Load<SoundEffect>("bounce");
         }
 
         /// <summary>
@@ -87,6 +98,8 @@ namespace GoalKeeper
                 Velocity.Y *= -1;
                 float delta = Bounds.Radius - Bounds.Y;
                 Bounds.Y += 2 * delta;
+                bounceX.Play();
+
             }
 
             if (Bounds.Center.Y > viewport.Height - Bounds.Radius)
@@ -94,6 +107,7 @@ namespace GoalKeeper
                 Velocity.Y *= -1;
                 float delta = viewport.Height - Bounds.Radius - Bounds.Y;
                 Bounds.Y += 2 * delta;
+                bounceX.Play();
             }
 
 
@@ -102,6 +116,7 @@ namespace GoalKeeper
                 Velocity.X *= -1;
                 float delta = viewport.Width - Bounds.Radius - Bounds.X;
                 Bounds.X += 2 * delta;
+                bounceX.Play();
             }
         }
 

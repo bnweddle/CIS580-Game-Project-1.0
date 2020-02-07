@@ -25,6 +25,12 @@
 /processorParam:TextureFormat=Color
 /build:ball.png
 
+#begin bounce.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:bounce.wav
+
 #begin end.png
 /importer:TextureImporter
 /processor:TextureProcessor

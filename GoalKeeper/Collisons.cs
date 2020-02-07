@@ -1,4 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿/* Author: Nathan Bean
+ * Modified By: Bethany Weddle
+ * Date: 2-7-20
+ * Done in Class mostly
+ * */
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;

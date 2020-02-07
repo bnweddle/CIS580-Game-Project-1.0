@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿/* Author: Nathan Bean
+ * Modified By: Bethany Weddle
+ * Date: 2-7-20
+ * */
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
