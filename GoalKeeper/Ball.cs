@@ -37,7 +37,9 @@ namespace GoalKeeper
         /// </summary>
         public Vector2 Velocity;
 
-
+        /// <summary>
+        /// Bouncing sound effect when soccer ball hits the walls
+        /// </summary>
         SoundEffect bounceX;
 
         /// <summary>
@@ -56,18 +58,17 @@ namespace GoalKeeper
         /// </summary>
         public void Initialize()
         {
+
+            Velocity = new Vector2(
+                (float)game.Random.NextDouble(),
+                (float)game.Random.NextDouble());
+
             // Set the ball's radius
             Bounds.Radius = 50;
 
             // position the ball in the center of the screen
             Bounds.X = game.GraphicsDevice.Viewport.Width / 2;
-            Bounds.Y = game.GraphicsDevice.Viewport.Height / 2;
-
-            // give the ball a random velocity
-            Velocity = new Vector2(
-                (float)game.Random.NextDouble(),
-                (float)game.Random.NextDouble()
-            );
+            Bounds.Y = game.GraphicsDevice.Viewport.Height / 2;        
 
             Velocity.Normalize();
         }

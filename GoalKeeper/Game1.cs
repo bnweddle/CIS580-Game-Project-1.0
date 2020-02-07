@@ -20,7 +20,6 @@ namespace GoalKeeper
         Paddle paddle;
         public Random Random = new Random();
 
-        KeyboardState oldstate;
         KeyboardState newState;
 
         //To keep track of lives and levels
@@ -29,8 +28,8 @@ namespace GoalKeeper
         int levels;
 
         // Whether the game is over or has started
-        bool beginGame;
-        bool endGame;
+        public bool beginGame = false;
+        public bool endGame = false;
 
         // For background start and end page
         Texture2D backgroundStart;
@@ -55,6 +54,7 @@ namespace GoalKeeper
             // TODO: Add your initialization logic here
             graphics.PreferredBackBufferWidth = 1042;
             graphics.PreferredBackBufferHeight = 768;
+
             ball.Initialize();
             paddle.Initialize();
             graphics.ApplyChanges();
@@ -62,8 +62,8 @@ namespace GoalKeeper
             lives = 5;
 
             // Keep track of the game starting and ending
-            endGame = false;
-            beginGame = false;
+            //endGame = false;
+            //beginGame = false;
 
             base.Initialize();
         }
@@ -113,35 +113,33 @@ namespace GoalKeeper
             paddle.Update(gameTime);
             ball.Update(gameTime);
 
-            if (ball.Bounds.X < 0)
+            // bounce off the side wall and decrement lives
+            if (ball.Bounds.X < ball.Bounds.Radius)
             {
-                //Velocity = Vector2.Zero;
-                if (!CollisionDetected(paddle.Bounds, ball.Bounds))
+                lives--;
+                ball.Velocity.X *= -1;
+                float delta = ball.Bounds.Radius - ball.Bounds.X;
+                ball.Bounds.X += 2 * delta;
+            }
+            
+            
+            // Bounce off the board
+            if (CollisionDetected(paddle.Bounds, ball.Bounds))
+            {
+                ball.Velocity.X *= -1;
+                var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                ball.Bounds.X += 2 * bounce;
+                if (levels == 2)
                 {
-                    lives--;
-                    ball.Velocity.X *= -1;
-                    float delta = ball.Bounds.Radius - ball.Bounds.X;
-                    ball.Bounds.X += 2 * delta;
+                    ball.Velocity.X += 0.25f;
                 }
-                else
+                if (levels == 3)
                 {
-                    ball.Velocity.X *= -1;
-                    var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
-                    ball.Bounds.X += 2 * bounce;
-                    if (levels == 2)
-                    {
-                        ball.Velocity.X += 0.25f;
-                    }
-                    if (levels == 3)
-                    {
-                        ball.Velocity.X += 0.25f;
-                        paddle.Bounds.Height -= 10;
-                    }
+                    ball.Velocity.X += 0.25f;
+                    paddle.Bounds.Height -= 10;
                 }
             }
             
-
-            newState = oldstate;
             base.Update(gameTime);
         }
 
@@ -200,8 +198,9 @@ namespace GoalKeeper
 
             // Start the game if Space is pressed.
             // Exit the keyboard handler method early, preventing the dino from jumping on the same keypress.
-            if (!beginGame)
+            if(!beginGame)
             {
+                ball.Velocity = Vector2.Zero;
                 Keys[] pressed = keyboardState.GetPressedKeys();
                 if (pressed.Length >= 1)
                 {
@@ -209,7 +208,7 @@ namespace GoalKeeper
                     {
                         paddle.Bounds.Height = 250;
                         levels = 1;
-                        beginGame = true;
+                        beginGame = true;      
                     }
                     else if (pressed[0] == Keys.D2 || pressed[0] == Keys.NumPad2)
                     {
@@ -228,16 +227,16 @@ namespace GoalKeeper
                         Exit();
                     }
 
+                    ball.Initialize();
                     ball.Velocity.Normalize();
                     endGame = false;
-
-                    return;
-                }        
+                }
             }
 
             // Restart the game if Enter is pressed
             if (endGame)
             {
+                ball.Velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
                     if(levels == 1)
@@ -252,7 +251,8 @@ namespace GoalKeeper
                     {
                         paddle.Bounds.Height = 150;
                     }
-                    
+
+                    ball.Initialize();
                     ball.Velocity.Normalize();
                     lives = 5;
                     endGame = false;
