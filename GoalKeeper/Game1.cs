@@ -2,6 +2,7 @@
  * CIS580 Project 1
  * */
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -28,8 +29,13 @@ namespace GoalKeeper
         int levels;
 
         // Whether the game is over or has started
-        public bool beginGame = false;
-        public bool endGame = false;
+        bool beginGame;
+        bool endGame;
+
+        // Sound effects for losing lives, hitting paddle, ending game;
+        SoundEffect loseLife;
+        SoundEffect gameOver;
+        SoundEffect paddleHit;
 
         // For background start and end page
         Texture2D backgroundStart;
@@ -62,8 +68,8 @@ namespace GoalKeeper
             lives = 5;
 
             // Keep track of the game starting and ending
-            //endGame = false;
-            //beginGame = false;
+            endGame = false;
+            beginGame = false;
 
             base.Initialize();
         }
@@ -76,6 +82,9 @@ namespace GoalKeeper
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            loseLife = Content.Load<SoundEffect>("lose_life");
+            gameOver = Content.Load<SoundEffect>("game_over");
+            paddleHit = Content.Load<SoundEffect>("paddle_hit");
             ball.LoadContent(Content);
             paddle.LoadContent(Content);
             heart = Content.Load<Texture2D>("heart");
@@ -101,9 +110,12 @@ namespace GoalKeeper
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            BeginGame();
 
             newState = Keyboard.GetState();
+
+            BeginGame();
+            // Why do I have to hit spacebar twice?
+            MuteSound(newState);
 
             if (newState.IsKeyDown(Keys.Escape))
             {
@@ -117,6 +129,11 @@ namespace GoalKeeper
             if (ball.Bounds.X < ball.Bounds.Radius)
             {
                 lives--;
+                if(lives > 0)
+                    loseLife.Play();
+                else
+                    gameOver.Play();
+
                 ball.Velocity.X *= -1;
                 float delta = ball.Bounds.Radius - ball.Bounds.X;
                 ball.Bounds.X += 2 * delta;
@@ -126,6 +143,8 @@ namespace GoalKeeper
             // Bounce off the board
             if (CollisionDetected(paddle.Bounds, ball.Bounds))
             {
+                paddleHit.Play();
+
                 ball.Velocity.X *= -1;
                 var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
@@ -139,7 +158,7 @@ namespace GoalKeeper
                     paddle.Bounds.Height -= 10;
                 }
             }
-            
+
             base.Update(gameTime);
         }
 
@@ -149,7 +168,7 @@ namespace GoalKeeper
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.SeaGreen);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
@@ -257,6 +276,24 @@ namespace GoalKeeper
                     lives = 5;
                     endGame = false;
                 }
+            }
+        }
+
+
+        public void MuteSound(KeyboardState state)
+        {
+            // idea of implementation from 
+            //https://www.gamefromscratch.com/post/2015/07/25/MonoGame-Tutorial-Audio.aspx
+            if (state.IsKeyDown(Keys.Space) )
+            {
+                if (SoundEffect.MasterVolume == 1.0f)
+                {
+                    SoundEffect.MasterVolume = 0.0f;
+                }
+                else
+                {
+                    SoundEffect.MasterVolume = 1.0f;
+                }              
             }
         }
 

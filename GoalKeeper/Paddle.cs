@@ -76,7 +76,7 @@ namespace GoalKeeper
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Bounds, Color.Red);
+            spriteBatch.Draw(texture, Bounds, Color.White);
         }
     }
 }

@@ -43,6 +43,12 @@
 /processorParam:TextureFormat=Color
 /build:end.png
 
+#begin game_over.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:game_over.wav
+
 #begin heart.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -67,6 +73,12 @@
 /processorParam:TextureFormat=Color
 /build:levels.png
 
+#begin lose_life.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:lose_life.wav
+
 #begin onepixel.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -78,6 +90,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:onepixel.png
+
+#begin paddle_hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:paddle_hit.wav
 
 #begin start.png
 /importer:TextureImporter
