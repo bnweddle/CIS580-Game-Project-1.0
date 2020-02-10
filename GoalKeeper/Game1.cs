@@ -16,9 +16,13 @@ namespace GoalKeeper
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont font;
 
         Ball ball;
         Paddle paddle;
+        Player player; //Use later
+
+        // For the ball starting point velocity
         public Random Random = new Random();
 
         KeyboardState newState;
@@ -47,6 +51,7 @@ namespace GoalKeeper
             Content.RootDirectory = "Content";
             paddle = new Paddle(this);
             ball = new Ball(this);
+            player = new Player(this);
         }
 
         /// <summary>
@@ -87,6 +92,7 @@ namespace GoalKeeper
             paddleHit = Content.Load<SoundEffect>("paddle_hit");
             ball.LoadContent(Content);
             paddle.LoadContent(Content);
+            font = Content.Load<SpriteFont>("DefaultFont");
             heart = Content.Load<Texture2D>("heart");
             // The image before starting the game
             backgroundStart = Content.Load<Texture2D>("levels");
@@ -159,6 +165,11 @@ namespace GoalKeeper
                 }
             }
 
+
+            var size = font.MeasureString("Let's Play");
+            //X component is the length, Y is the width
+
+
             base.Update(gameTime);
         }
 
@@ -200,7 +211,8 @@ namespace GoalKeeper
                 }
             }
 
-
+            //It is also dynamic
+            spriteBatch.DrawString(font, "Let's Play", new Vector2(200, 200), Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }
