@@ -133,7 +133,7 @@ namespace GoalKeeper
                 Exit();
             }
 
-            //paddle.Update(gameTime);
+            //paddle.Update(gameTime); Don't need to move Paddle
             ball.Update(gameTime);
             player.Update(gameTime);
             
@@ -149,7 +149,6 @@ namespace GoalKeeper
                     endGame = true;
                 }
 
-
                 ball.Velocity.X *= -1;
                 var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
@@ -159,8 +158,9 @@ namespace GoalKeeper
                 }
                 if (levels == 3)
                 {
+                    //increase goal and speed
                     ball.Velocity.X += 0.25f;
-                    paddle.Bounds.Height -= 10;
+                    paddle.Bounds.Height += 10;
                 }
             }
             if (ball.Bounds.CollidesWith(player.Bounds))
@@ -248,13 +248,14 @@ namespace GoalKeeper
                     }
                     else if (pressed[0] == Keys.D2 || pressed[0] == Keys.NumPad2)
                     {
-                        paddle.Bounds.Height = 200;
+                        //Make goal harder to protect
+                        paddle.Bounds.Height = 300;
                         levels = 2;
                         beginGame = true;
                     }
                     else if (pressed[0] == Keys.D3 || pressed[0] == Keys.NumPad3)
                     {
-                        paddle.Bounds.Height = 150;
+                        paddle.Bounds.Height = 350;
                         levels = 3;
                         beginGame = true;
                     }
