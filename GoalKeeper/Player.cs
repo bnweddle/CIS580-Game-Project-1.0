@@ -1,4 +1,5 @@
 ﻿/* Author: Nathan Bean
+ * Modified by Bethany Weddle
  * In class work for Sprite Animation, need to use a state machine to track player movement
  * */
 using Microsoft.Xna.Framework;
@@ -26,19 +27,18 @@ namespace GoalKeeper
         // how much the animation moves per frames 
         const int ANIMATION_FRAME_RATE = 124;
         // the speed of the player
-        const float PLAYER_SPEED = 100;
+        const float PLAYER_SPEED = 200;
         // width of animation frames
-        const int FRAME_WIDTH = 67;
+        public const int FRAME_WIDTH = 67;
         // height of animation frames
         const int FRAME_HEIGHT = 100;
 
 
         Game1 game;
-        KeyboardState oldState;
         Texture2D player;
         State state;
         TimeSpan timer;
-        Vector2 position;
+        public Vector2 position;
         public BoundingRectangle Bounds;
         int frame;
 
@@ -62,30 +62,11 @@ namespace GoalKeeper
 
         public void Update(GameTime gameTime)
         {
-            MovePlayer(gameTime);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-
-            Bounds = new BoundingRectangle(
-                frame * FRAME_WIDTH,  // X value
-                (int)state % 4 * FRAME_HEIGHT, // Y value
-                FRAME_WIDTH,
-                FRAME_HEIGHT
-                );
-
-            spriteBatch.Draw(player, position, Bounds, Color.White);
-
-        }
-
-        public void MovePlayer(GameTime gameTime)
-        {
             //Movement
             KeyboardState newState = Keyboard.GetState();
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(newState.IsKeyDown(Keys.Up))
+            if (newState.IsKeyDown(Keys.Up))
             {
                 state = State.North;
                 position.Y -= delta * PLAYER_SPEED;
@@ -112,7 +93,7 @@ namespace GoalKeeper
             {
                 position.Y = 0;
             }
-            if(position.X < 0)
+            if (position.X < 0)
             {
                 position.X = 0;
             }
@@ -120,7 +101,7 @@ namespace GoalKeeper
             {
                 position.Y = game.GraphicsDevice.Viewport.Height - FRAME_HEIGHT;
             }
-            if(position.X > game.GraphicsDevice.Viewport.Width - FRAME_WIDTH)
+            if (position.X > game.GraphicsDevice.Viewport.Width - FRAME_WIDTH)
             {
                 position.X = game.GraphicsDevice.Viewport.Width - FRAME_WIDTH;
             }
@@ -130,7 +111,7 @@ namespace GoalKeeper
                 timer += gameTime.ElapsedGameTime;
 
             // Check if animation should increase by more than one frame
-            while(timer.TotalMilliseconds > ANIMATION_FRAME_RATE)
+            while (timer.TotalMilliseconds > ANIMATION_FRAME_RATE)
             {
                 // increase frame
                 frame++;
@@ -140,5 +121,20 @@ namespace GoalKeeper
 
             frame %= 4;
         }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+
+            Bounds = new BoundingRectangle(
+                frame * FRAME_WIDTH,  // X value
+                (int)state % 4 * FRAME_HEIGHT, // Y value
+                FRAME_WIDTH,
+                FRAME_HEIGHT
+                );
+
+            spriteBatch.Draw(player, position, Bounds, Color.White);
+
+        }
+
     }
 }

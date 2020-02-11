@@ -150,10 +150,10 @@ namespace GoalKeeper
                 float delta = ball.Bounds.Radius - ball.Bounds.X;
                 ball.Bounds.X += 2 * delta;
             }
-            
+
             
             // Bounce off the board
-            if (CollisionDetected(paddle.Bounds, ball.Bounds) || CollisionDetected(player.Bounds, ball.Bounds))
+            if (CollisionDetected(paddle.Bounds, ball.Bounds))
             {
                 paddleHit.Play();
 
@@ -169,6 +169,16 @@ namespace GoalKeeper
                     ball.Velocity.X += 0.25f;
                     paddle.Bounds.Height -= 10;
                 }
+            }
+
+
+            Rectangle ballRect = (Rectangle)ball.Bounds;
+            Rectangle playerRect = (Rectangle)player.Bounds;
+            if (ballRect.Intersects(playerRect))
+            {
+                ball.Velocity.X *= -1;
+                var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                ball.Bounds.X += 2 * bounce;
             }
 
 
@@ -205,7 +215,6 @@ namespace GoalKeeper
             }
             else
             {
-
                 ball.Draw(spriteBatch);
                 paddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
