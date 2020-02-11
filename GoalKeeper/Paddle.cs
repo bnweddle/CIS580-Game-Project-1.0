@@ -36,7 +36,8 @@ namespace GoalKeeper
             Bounds.Width = 50;
             Bounds.Height = 250;
             Bounds.X = 0;
-            Bounds.Y = Game.GraphicsDevice.Viewport.Height / 2 - Bounds.Height / 2;
+            //Put the paddle in the middle of the screen
+            Bounds.Y = Game.GraphicsDevice.Viewport.Height / 2;
         }
 
         public void LoadContent(ContentManager content)
@@ -46,6 +47,7 @@ namespace GoalKeeper
 
         public void Update(GameTime gameTime)
         {
+            //Don't call in Game class 
             //Movement
             var newState = Keyboard.GetState();
 

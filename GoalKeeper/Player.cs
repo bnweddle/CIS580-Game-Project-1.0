@@ -40,6 +40,7 @@ namespace GoalKeeper
         TimeSpan timer;
         public Vector2 position;
         public BoundingRectangle Bounds;
+        KeyboardState oldState;
         int frame;
 
 
@@ -120,6 +121,7 @@ namespace GoalKeeper
             }
 
             frame %= 4;
+            oldState = newState;
         }
 
         public void Draw(SpriteBatch spriteBatch)

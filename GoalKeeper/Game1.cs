@@ -133,29 +133,22 @@ namespace GoalKeeper
                 Exit();
             }
 
-            paddle.Update(gameTime);
+            //paddle.Update(gameTime);
             ball.Update(gameTime);
             player.Update(gameTime);
-
-            // bounce off the side wall and decrement lives
-            if (ball.Bounds.X < ball.Bounds.Radius)
-            {
-                lives--;
-                if(lives > 0)
-                    loseLife.Play();
-                else
-                    gameOver.Play();
-
-                ball.Velocity.X *= -1;
-                float delta = ball.Bounds.Radius - ball.Bounds.X;
-                ball.Bounds.X += 2 * delta;
-            }
-
             
             // Bounce off the board
             if (CollisionDetected(paddle.Bounds, ball.Bounds))
-            {
-                paddleHit.Play();
+            {            
+                lives--;
+                if (lives > 0)
+                    loseLife.Play();
+                else if(lives == 0)
+                {
+                    gameOver.Play();
+                    endGame = true;
+                }
+
 
                 ball.Velocity.X *= -1;
                 var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
@@ -170,12 +163,9 @@ namespace GoalKeeper
                     paddle.Bounds.Height -= 10;
                 }
             }
-
-
-            Rectangle ballRect = (Rectangle)ball.Bounds;
-            Rectangle playerRect = (Rectangle)player.Bounds;
-            if (ballRect.Intersects(playerRect))
+            if (ball.Bounds.CollidesWith(player.Bounds))
             {
+                paddleHit.Play();
                 ball.Velocity.X *= -1;
                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
@@ -218,6 +208,7 @@ namespace GoalKeeper
                 ball.Draw(spriteBatch);
                 paddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
+                spriteBatch.DrawString(font, "Let's play", player.position, Color.White);
 
                 int start = 50;
                 for (int i = 0; i < lives; i++)
@@ -225,10 +216,8 @@ namespace GoalKeeper
                     spriteBatch.Draw(heart, new Rectangle(graphics.PreferredBackBufferWidth - start, graphics.PreferredBackBufferHeight - 50, 50, 50), Color.White);
                     start += 50;
                 }
-            }
-
-            //It is also dynamic
-            spriteBatch.DrawString(font, "Let's Play", new Vector2(200, 200), Color.White);
+            }                
+            
             spriteBatch.End();
             base.Draw(gameTime);
         }

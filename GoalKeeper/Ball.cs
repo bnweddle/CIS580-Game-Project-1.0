@@ -106,6 +106,14 @@ namespace GoalKeeper
                 bounceX.Play();
             }
 
+            if (Bounds.X < Bounds.Radius)
+            {
+                Velocity.X *= -1;
+                float delta = Bounds.Radius - Bounds.X;
+                Bounds.X += 2 * delta;
+                bounceX.Play();
+            }
+
 
             if (Bounds.X > viewport.Width - Bounds.Radius)
             {
