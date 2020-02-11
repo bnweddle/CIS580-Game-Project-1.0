@@ -43,5 +43,6 @@ namespace GoalKeeper
         {
             return new Rectangle((int)BR.X, (int)BR.Y, (int)BR.Width, (int)BR.Height);
         }
+
     }
 }

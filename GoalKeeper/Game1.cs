@@ -20,12 +20,14 @@ namespace GoalKeeper
 
         Ball ball;
         Paddle paddle;
-        Player player; //Use later
+        Player player;
 
         // For the ball starting point velocity
         public Random Random = new Random();
 
+        // To see if Mute/Spacebar was pressed 
         KeyboardState newState;
+        KeyboardState oldState;
 
         //To keep track of lives and levels
         Texture2D heart;
@@ -66,9 +68,11 @@ namespace GoalKeeper
             graphics.PreferredBackBufferWidth = 1042;
             graphics.PreferredBackBufferHeight = 768;
 
+            player.Initialize();
             ball.Initialize();
             paddle.Initialize();
             graphics.ApplyChanges();
+
 
             lives = 5;
 
@@ -92,6 +96,7 @@ namespace GoalKeeper
             paddleHit = Content.Load<SoundEffect>("paddle_hit");
             ball.LoadContent(Content);
             paddle.LoadContent(Content);
+            player.LoadContent(Content);
             font = Content.Load<SpriteFont>("DefaultFont");
             heart = Content.Load<Texture2D>("heart");
             // The image before starting the game
@@ -121,7 +126,7 @@ namespace GoalKeeper
 
             BeginGame();
             // Why do I have to hit spacebar twice?
-            MuteSound(newState);
+            MuteSound(newState, oldState);
 
             if (newState.IsKeyDown(Keys.Escape))
             {
@@ -130,6 +135,7 @@ namespace GoalKeeper
 
             paddle.Update(gameTime);
             ball.Update(gameTime);
+            player.Update(gameTime);
 
             // bounce off the side wall and decrement lives
             if (ball.Bounds.X < ball.Bounds.Radius)
@@ -147,7 +153,7 @@ namespace GoalKeeper
             
             
             // Bounce off the board
-            if (CollisionDetected(paddle.Bounds, ball.Bounds))
+            if (CollisionDetected(paddle.Bounds, ball.Bounds) || CollisionDetected(player.Bounds, ball.Bounds))
             {
                 paddleHit.Play();
 
@@ -169,7 +175,7 @@ namespace GoalKeeper
             var size = font.MeasureString("Let's Play");
             //X component is the length, Y is the width
 
-
+            oldState = newState;
             base.Update(gameTime);
         }
 
@@ -202,6 +208,7 @@ namespace GoalKeeper
 
                 ball.Draw(spriteBatch);
                 paddle.Draw(spriteBatch);
+                player.Draw(spriteBatch);
 
                 int start = 50;
                 for (int i = 0; i < lives; i++)
@@ -292,11 +299,11 @@ namespace GoalKeeper
         }
 
 
-        public void MuteSound(KeyboardState state)
+        public void MuteSound(KeyboardState newS, KeyboardState oldS)
         {
             // idea of implementation from 
             //https://www.gamefromscratch.com/post/2015/07/25/MonoGame-Tutorial-Audio.aspx
-            if (state.IsKeyDown(Keys.Space) )
+            if (!oldState.IsKeyDown(Keys.Space) && newS.IsKeyDown(Keys.Space))
             {
                 if (SoundEffect.MasterVolume == 1.0f)
                 {

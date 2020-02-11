@@ -2,14 +2,9 @@
  * Modified By: Bethany Weddle
  * Date: 2-7-20
  * */
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using System;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
@@ -64,7 +59,7 @@ namespace GoalKeeper
                 (float)game.Random.NextDouble());
 
             // Set the ball's radius
-            Bounds.Radius = 50;
+            Bounds.Radius = 25;
 
             // position the ball in the center of the screen
             Bounds.X = game.GraphicsDevice.Viewport.Width / 2;
@@ -91,7 +86,7 @@ namespace GoalKeeper
         {
             var viewport = game.GraphicsDevice.Viewport;
 
-            Bounds.Center += (float)gameTime.ElapsedGameTime.TotalMilliseconds * Velocity;
+            Bounds.Center += (float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.50f * Velocity;
 
             // Check for wall collisions
             if (Bounds.Center.Y < Bounds.Radius)
