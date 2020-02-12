@@ -175,11 +175,7 @@ namespace GoalKeeper
                 ball.Velocity.X *= -1;
                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
-            }
-
-
-            //var size = font.MeasureString("Let's Play");
-            //X component is the length, Y is the width
+            }  
 
             oldState = newState;
             base.Update(gameTime);
