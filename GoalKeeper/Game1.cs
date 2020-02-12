@@ -48,7 +48,7 @@ namespace GoalKeeper
         Texture2D backgroundEnd;
 
         int kickCount;
-        bool mute = true;
+        bool mute = false;
 
         public Game1()
         {
@@ -215,6 +215,7 @@ namespace GoalKeeper
                 paddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
 
+                //For changing the player's comments as the game progresses
                 if(lives == 5 && kickCount == 0)
                 {
                     spriteBatch.DrawString(font, "Let's play", player.position, Color.White);
@@ -227,9 +228,13 @@ namespace GoalKeeper
                 {
                     spriteBatch.DrawString(font, "Whoo hoo!", player.position, Color.White);
                 }
-                if(mute)
+                if(mute == false)
                 {
-                    spriteBatch.DrawString(font, "Press SPACE to mute or unmute", new Vector2(400, 0), Color.White);
+                    spriteBatch.DrawString(font, "Press SPACE to mute", new Vector2(425, 0), Color.White);
+                }
+                if(mute == true)
+                {
+                    spriteBatch.DrawString(font, "Press SPACE to unmute", new Vector2(420, 0), Color.White);
                 }
               
                 int start = 50;
@@ -310,12 +315,14 @@ namespace GoalKeeper
                     {
                         paddle.Bounds.Height = 150;
                     }
-
+                    //Reset the game
                     ball.Initialize();
                     ball.Velocity.Normalize();
                     kickCount = 0;
                     lives = 5;
                     endGame = false;
+                    mute = false;
+                    SoundEffect.MasterVolume = 1.0f;
                 }
             }
         }
@@ -330,10 +337,12 @@ namespace GoalKeeper
                 if (SoundEffect.MasterVolume == 1.0f)
                 {
                     SoundEffect.MasterVolume = 0.0f;
+                    mute = true;
                 }
                 else
                 {
                     SoundEffect.MasterVolume = 1.0f;
+                    mute = false;
                 }              
             }
         }
