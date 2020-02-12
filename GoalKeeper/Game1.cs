@@ -47,6 +47,9 @@ namespace GoalKeeper
         Texture2D backgroundStart;
         Texture2D backgroundEnd;
 
+        int kickCount;
+        bool mute = true;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -75,6 +78,7 @@ namespace GoalKeeper
 
 
             lives = 5;
+            kickCount = 0;
 
             // Keep track of the game starting and ending
             endGame = false;
@@ -163,8 +167,10 @@ namespace GoalKeeper
                     paddle.Bounds.Height += 10;
                 }
             }
-            if (ball.Bounds.CollidesWith(player.Bounds))
+
+            if (CollisionDetected(player.Bounds, ball.Bounds))
             {
+                kickCount++;
                 paddleHit.Play();
                 ball.Velocity.X *= -1;
                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
@@ -172,7 +178,7 @@ namespace GoalKeeper
             }
 
 
-            var size = font.MeasureString("Let's Play");
+            //var size = font.MeasureString("Let's Play");
             //X component is the length, Y is the width
 
             oldState = newState;
@@ -208,8 +214,24 @@ namespace GoalKeeper
                 ball.Draw(spriteBatch);
                 paddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
-                spriteBatch.DrawString(font, "Let's play", player.position, Color.White);
 
+                if(lives == 5 && kickCount == 0)
+                {
+                    spriteBatch.DrawString(font, "Let's play", player.position, Color.White);
+                }
+                if(lives < 2)
+                {
+                    spriteBatch.DrawString(font, "Oh Dear!", player.position, Color.White);
+                }
+                if(lives == 5 && kickCount > 4)
+                {
+                    spriteBatch.DrawString(font, "Whoo hoo!", player.position, Color.White);
+                }
+                if(mute)
+                {
+                    spriteBatch.DrawString(font, "Press SPACE to mute or unmute", new Vector2(400, 0), Color.White);
+                }
+              
                 int start = 50;
                 for (int i = 0; i < lives; i++)
                 {
@@ -291,6 +313,7 @@ namespace GoalKeeper
 
                     ball.Initialize();
                     ball.Velocity.Normalize();
+                    kickCount = 0;
                     lives = 5;
                     endGame = false;
                 }

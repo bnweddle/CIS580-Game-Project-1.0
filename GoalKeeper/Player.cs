@@ -54,6 +54,8 @@ namespace GoalKeeper
             timer = new TimeSpan(0);
             position = new Vector2(200, 200);
             state = State.Idle;
+            Bounds.Width = FRAME_WIDTH;
+            Bounds.Height = FRAME_HEIGHT;
         }
 
         public void LoadContent(ContentManager content)
@@ -66,6 +68,8 @@ namespace GoalKeeper
             //Movement
             KeyboardState newState = Keyboard.GetState();
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Bounds.X = position.X;
+            Bounds.Y = position.Y;
 
             if (newState.IsKeyDown(Keys.Up))
             {
@@ -127,14 +131,14 @@ namespace GoalKeeper
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            Bounds = new BoundingRectangle(
+            Rectangle rectSource = new Rectangle(
                 frame * FRAME_WIDTH,  // X value
                 (int)state % 4 * FRAME_HEIGHT, // Y value
                 FRAME_WIDTH,
                 FRAME_HEIGHT
                 );
 
-            spriteBatch.Draw(player, position, Bounds, Color.White);
+            spriteBatch.Draw(player, position, rectSource, Color.White);
 
         }
 
