@@ -144,5 +144,11 @@ namespace GoalKeeper
             spriteBatch.Draw(player, position, rectSource, Color.White);
         }
 
+        public void CheckCollisions(Ball ball)
+        {
+            // Check for player collisions and bounce ball off players
+            //HOW to do this part?????
+        }
+
     }
 }

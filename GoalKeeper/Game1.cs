@@ -32,9 +32,6 @@ namespace GoalKeeper
         KeyboardState newState;
         KeyboardState oldState;
 
-        //To keep track levels
-        int levels;
-
         // Whether the game is over or has started
         bool beginGame;
         bool endGame;
@@ -105,7 +102,7 @@ namespace GoalKeeper
             enemy.LoadContent(Content);
             font = Content.Load<SpriteFont>("DefaultFont");
             // The image before starting the game
-            backgroundStart = Content.Load<Texture2D>("levels");
+            backgroundStart = Content.Load<Texture2D>("start");
             backgroundEnd = Content.Load<Texture2D>("end");
             // TODO: use this.Content to load your game content here
         }
@@ -162,16 +159,7 @@ namespace GoalKeeper
                 ball.Velocity.X *= -1;
                 var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
-                if (levels == 2)
-                {
-                    ball.Velocity.X += 0.25f;
-                }
-                if (levels == 3)
-                {
-                    //increase goal and speed
-                    ball.Velocity.X += 0.25f;
-                    paddle.Bounds.Height += 10;
-                }
+
             }
 
             if(CollisionDetected(enemyPaddle.Bounds, ball.Bounds))
@@ -191,21 +179,22 @@ namespace GoalKeeper
                 ball.Bounds.X += 2 * bounce;
             }
 
-            if (CollisionDetected(player.Bounds, ball.Bounds))
-            {
-                paddleHit.Play();
-                ball.Velocity.X *= -1;
-                var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
-                ball.Bounds.X += 2 * bounce;
-            }
+             if (CollisionDetected(player.Bounds, ball.Bounds))
+             {
+                 paddleHit.Play();
+                 ball.Velocity.X *= -1;
+                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                 ball.Bounds.X += 2 * bounce;
+             }
 
-            if(CollisionDetected(enemy.Bounds, ball.Bounds))
-            {
-                paddleHit.Play();
-                ball.Velocity.X *= -1;
-                var bounce = (enemy.Bounds.X + enemy.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
-                ball.Bounds.X += 2 * bounce;
-            }
+             if(CollisionDetected(enemy.Bounds, ball.Bounds))
+             {
+                 paddleHit.Play();
+                 ball.Velocity.X *= -1;
+                 var bounce = (enemy.Bounds.X + enemy.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                 ball.Bounds.X += 2 * bounce;
+             }
+
 
             oldState = newState;
             base.Update(gameTime);
@@ -232,17 +221,16 @@ namespace GoalKeeper
             else if (player.lives <= 0 || enemy.lives <= 0)
             {
                 // Why isn't this working??
-                if(enemy.lives <= 0)
-                {
-                    spriteBatch.DrawString(font, "Player 1 WINS!", new Vector2(425, 0), Color.White);
-                }
-                else if(player.lives <= 0)
+                if(enemy.score == 5)
                 {
                     spriteBatch.DrawString(font, "Player 2 WINS!", new Vector2(425, 0), Color.White);
                 }
+                else if(player.score == 5)
+                {
+                    spriteBatch.DrawString(font, "Player 1 WINS!", new Vector2(425, 0), Color.White);
+                }
                 spriteBatch.Draw(backgroundEnd, new Rectangle(0, 0,
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
-                endGame = true;
             }
             else
             {
@@ -258,11 +246,11 @@ namespace GoalKeeper
 
                 if(mute == false)
                 {
-                    spriteBatch.DrawString(font, "Press SPACE to mute", new Vector2(425, 0), Color.White);
+                    spriteBatch.DrawString(font, "Press M to mute", new Vector2(425, 0), Color.White);
                 }
                 if(mute == true)
                 {
-                    spriteBatch.DrawString(font, "Press SPACE to unmute", new Vector2(420, 0), Color.White);
+                    spriteBatch.DrawString(font, "Press M to unmute", new Vector2(420, 0), Color.White);
                 }
              
             }                
@@ -282,40 +270,16 @@ namespace GoalKeeper
                 Exit();
 
             // Start the game if Space is pressed.
-            // Exit the keyboard handler method early, preventing the dino from jumping on the same keypress.
-            if(!beginGame)
+            // Exit the keyboard handler method early if not.
+            if (!beginGame)
             {
                 ball.Velocity = Vector2.Zero;
-                Keys[] pressed = keyboardState.GetPressedKeys();
-                if (pressed.Length >= 1)
+                if (keyboardState.IsKeyDown(Keys.Space))
                 {
-                    if (pressed[0] == Keys.D1 || pressed[0] == Keys.NumPad1)
-                    {
-                        paddle.Bounds.Height = 250;
-                        levels = 1;
-                        beginGame = true;      
-                    }
-                    else if (pressed[0] == Keys.D2 || pressed[0] == Keys.NumPad2)
-                    {
-                        //Make goal harder to protect
-                        paddle.Bounds.Height = 300;
-                        levels = 2;
-                        beginGame = true;
-                    }
-                    else if (pressed[0] == Keys.D3 || pressed[0] == Keys.NumPad3)
-                    {
-                        paddle.Bounds.Height = 350;
-                        levels = 3;
-                        beginGame = true;
-                    }
-                    else
-                    {
-                        Exit();
-                    }
-
                     ball.Initialize();
                     ball.Velocity.Normalize();
                     endGame = false;
+                    beginGame = true;
                 }
             }
 
@@ -325,18 +289,6 @@ namespace GoalKeeper
                 ball.Velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
-                    if(levels == 1)
-                    {
-                        paddle.Bounds.Height = 250;
-                    }
-                    else if(levels == 2)
-                    {
-                        paddle.Bounds.Height = 200;
-                    }
-                    else
-                    {
-                        paddle.Bounds.Height = 150;
-                    }
                     //Reset the game
                     ball.Initialize();
                     ball.Velocity.Normalize();
@@ -356,7 +308,7 @@ namespace GoalKeeper
         {
             // idea of implementation from 
             //https://www.gamefromscratch.com/post/2015/07/25/MonoGame-Tutorial-Audio.aspx
-            if (!oldState.IsKeyDown(Keys.Space) && newS.IsKeyDown(Keys.Space))
+            if (!oldState.IsKeyDown(Keys.M) && newS.IsKeyDown(Keys.M))
             {
                 if (SoundEffect.MasterVolume == 1.0f)
                 {
