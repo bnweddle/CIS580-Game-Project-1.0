@@ -47,10 +47,12 @@
     <Compile Include="BoundingRectangle.cs" />
     <Compile Include="Collisons.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Grid.cs" />
     <Compile Include="Paddle.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

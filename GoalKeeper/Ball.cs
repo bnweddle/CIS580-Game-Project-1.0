@@ -95,7 +95,6 @@ namespace GoalKeeper
                 float delta = Bounds.Radius - Bounds.Y;
                 Bounds.Y += 2 * delta;
                 bounceX.Play();
-
             }
 
             if (Bounds.Center.Y > viewport.Height - Bounds.Radius)

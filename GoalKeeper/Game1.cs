@@ -142,7 +142,8 @@ namespace GoalKeeper
             ball.Update(gameTime);
             player.Update(gameTime, keylist1);
             enemy.Update(gameTime, keylist2);
-            
+
+            /*
             // Bounce off the player 1 board
             if (CollisionDetected(paddle.Bounds, ball.Bounds))
             {
@@ -162,6 +163,7 @@ namespace GoalKeeper
 
             }
 
+            
             if(CollisionDetected(enemyPaddle.Bounds, ball.Bounds))
             {
                 enemy.lives--;
@@ -178,6 +180,7 @@ namespace GoalKeeper
                 var bounce = (enemyPaddle.Bounds.X + enemyPaddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
             }
+            
 
              if (CollisionDetected(player.Bounds, ball.Bounds))
              {
@@ -193,11 +196,12 @@ namespace GoalKeeper
                  ball.Velocity.X *= -1;
                  var bounce = (enemy.Bounds.X + enemy.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                  ball.Bounds.X += 2 * bounce;
-             }
+             } */
 
 
             oldState = newState;
             base.Update(gameTime);
+          
         }
 
         /// <summary>
