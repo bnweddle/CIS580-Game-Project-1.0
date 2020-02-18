@@ -18,9 +18,12 @@ namespace GoalKeeper
         SpriteBatch spriteBatch;
         SpriteFont font;
 
+        //Using flyweight pattern to use two instances of player and paddle
         Ball ball;
         Paddle paddle;
+        Paddle enemyPaddle;
         Player player;
+        Player enemy;
 
         // For the ball starting point velocity
         public Random Random = new Random();
@@ -54,9 +57,11 @@ namespace GoalKeeper
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            paddle = new Paddle(this);
+            paddle = new Paddle(this, new Vector2(0, graphics.PreferredBackBufferHeight / 2));
+            enemyPaddle = new Paddle(this, new Vector2(992, graphics.PreferredBackBufferHeight / 2));
             ball = new Ball(this);
-            player = new Player(this);
+            player = new Player(this, new Vector2(200, 200));
+            enemy = new Player(this, new Vector2(800, 200));
         }
 
         /// <summary>
@@ -72,8 +77,10 @@ namespace GoalKeeper
             graphics.PreferredBackBufferHeight = 768;
 
             player.Initialize();
+            enemy.Initialize();
             ball.Initialize();
             paddle.Initialize();
+            enemyPaddle.Initialize();
             graphics.ApplyChanges();
 
 
@@ -100,7 +107,9 @@ namespace GoalKeeper
             paddleHit = Content.Load<SoundEffect>("paddle_hit");
             ball.LoadContent(Content);
             paddle.LoadContent(Content);
+            enemyPaddle.LoadContent(Content);
             player.LoadContent(Content);
+            enemy.LoadContent(Content);
             font = Content.Load<SpriteFont>("DefaultFont");
             heart = Content.Load<Texture2D>("heart");
             // The image before starting the game
@@ -137,9 +146,13 @@ namespace GoalKeeper
                 Exit();
             }
 
-            //paddle.Update(gameTime); Don't need to move Paddle
+            //For different keys for each player
+            Keys[] keylist1 = { Keys.W, Keys.A, Keys.D, Keys.S };
+            Keys[] keylist2 = { Keys.Up, Keys.Left, Keys.Right, Keys.Down };
+
             ball.Update(gameTime);
-            player.Update(gameTime);
+            player.Update(gameTime, keylist1);
+            enemy.Update(gameTime, keylist2);
             
             // Bounce off the board
             if (CollisionDetected(paddle.Bounds, ball.Bounds))
@@ -175,7 +188,14 @@ namespace GoalKeeper
                 ball.Velocity.X *= -1;
                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
-            }  
+            }
+
+            if(CollisionDetected(enemy.Bounds, ball.Bounds))
+            {
+                ball.Velocity.X *= -1;
+                var bounce = (enemy.Bounds.X + enemy.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                ball.Bounds.X += 2 * bounce;
+            }
 
             oldState = newState;
             base.Update(gameTime);
@@ -209,7 +229,9 @@ namespace GoalKeeper
             {
                 ball.Draw(spriteBatch);
                 paddle.Draw(spriteBatch);
+                enemyPaddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
+                enemy.Draw(spriteBatch);
 
                 //For changing the player's comments as the game progresses
                 if(lives == 5 && kickCount == 0)

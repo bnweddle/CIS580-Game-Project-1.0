@@ -20,24 +20,25 @@ namespace GoalKeeper
         Game1 Game;
         Texture2D texture;
         KeyboardState oldstate;
-
+        Vector2 position;
 
         /// <summary>
         /// Creates a paddle
         /// </summary>
         /// <param name="game">Reference to the game</param>
-        public Paddle(Game1 game)
+        public Paddle(Game1 game, Vector2 position)
         {
             this.Game = game;
+            this.position = position;
         }
 
         public void Initialize()
         {
             Bounds.Width = 50;
             Bounds.Height = 250;
-            Bounds.X = 0;
+            //Bounds.X = 0;
             //Put the paddle in the middle of the screen
-            Bounds.Y = Game.GraphicsDevice.Viewport.Height / 2;
+            //Bounds.Y = Game.GraphicsDevice.Viewport.Height / 2;
         }
 
         public void LoadContent(ContentManager content)
@@ -50,6 +51,8 @@ namespace GoalKeeper
             //Don't call in Game class 
             //Movement
             var newState = Keyboard.GetState();
+            Bounds.X = position.X;
+            Bounds.Y = position.Y;
 
             // increasing or/and decreasing the speed of the paddle
             if (newState.IsKeyDown(Keys.Up) && !oldstate.IsKeyDown(Keys.Down))
@@ -78,7 +81,7 @@ namespace GoalKeeper
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Bounds, Color.White);
+            spriteBatch.Draw(texture, position, Bounds, Color.White);
         }
     }
 }

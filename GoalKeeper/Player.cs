@@ -44,15 +44,15 @@ namespace GoalKeeper
         int frame;
 
 
-        public Player(Game1 game)
+        public Player(Game1 game, Vector2 position)
         {
             this.game = game;
+            this.position = position;
         }
 
         public void Initialize()
         {
             timer = new TimeSpan(0);
-            position = new Vector2(200, 200);
             state = State.Idle;
             Bounds.Width = FRAME_WIDTH;
             Bounds.Height = FRAME_HEIGHT;
@@ -63,7 +63,7 @@ namespace GoalKeeper
             player = content.Load<Texture2D>("newPlayer");
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Keys[] keys)
         {
             //Movement
             KeyboardState newState = Keyboard.GetState();
@@ -71,22 +71,22 @@ namespace GoalKeeper
             Bounds.X = position.X;
             Bounds.Y = position.Y;
 
-            if (newState.IsKeyDown(Keys.Up))
+            if (newState.IsKeyDown(keys[0]))
             {
                 state = State.North;
                 position.Y -= delta * PLAYER_SPEED;
             }
-            else if (newState.IsKeyDown(Keys.Left))
+            else if (newState.IsKeyDown(keys[1]))
             {
                 state = State.West;
                 position.X -= delta * PLAYER_SPEED;
             }
-            else if (newState.IsKeyDown(Keys.Right))
+            else if (newState.IsKeyDown(keys[2]))
             {
                 state = State.East;
                 position.X += delta * PLAYER_SPEED;
             }
-            else if (newState.IsKeyDown(Keys.Down))
+            else if (newState.IsKeyDown(keys[3]))
             {
                 state = State.South;
                 position.Y += delta * PLAYER_SPEED;
@@ -127,7 +127,6 @@ namespace GoalKeeper
             frame %= 4;
             oldState = newState;
         }
-
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -139,7 +138,6 @@ namespace GoalKeeper
                 );
 
             spriteBatch.Draw(player, position, rectSource, Color.White);
-
         }
 
     }
