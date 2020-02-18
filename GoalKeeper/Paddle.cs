@@ -36,9 +36,8 @@ namespace GoalKeeper
         {
             Bounds.Width = 50;
             Bounds.Height = 250;
-            //Bounds.X = 0;
-            //Put the paddle in the middle of the screen
-            //Bounds.Y = Game.GraphicsDevice.Viewport.Height / 2;
+            Bounds.X = position.X;
+            Bounds.Y = position.Y;
         }
 
         public void LoadContent(ContentManager content)
@@ -51,8 +50,6 @@ namespace GoalKeeper
             //Don't call in Game class 
             //Movement
             var newState = Keyboard.GetState();
-            Bounds.X = position.X;
-            Bounds.Y = position.Y;
 
             // increasing or/and decreasing the speed of the paddle
             if (newState.IsKeyDown(Keys.Up) && !oldstate.IsKeyDown(Keys.Down))

@@ -40,6 +40,8 @@ namespace GoalKeeper
         TimeSpan timer;
         public Vector2 position;
         public BoundingRectangle Bounds;
+        public int score;
+        public int lives;
         KeyboardState oldState;
         int frame;
 
@@ -52,6 +54,8 @@ namespace GoalKeeper
 
         public void Initialize()
         {
+            lives = 5;
+            score = 0;
             timer = new TimeSpan(0);
             state = State.Idle;
             Bounds.Width = FRAME_WIDTH;

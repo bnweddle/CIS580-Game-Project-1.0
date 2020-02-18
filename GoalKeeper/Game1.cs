@@ -32,9 +32,7 @@ namespace GoalKeeper
         KeyboardState newState;
         KeyboardState oldState;
 
-        //To keep track of lives and levels
-        Texture2D heart;
-        int lives;
+        //To keep track levels
         int levels;
 
         // Whether the game is over or has started
@@ -50,7 +48,6 @@ namespace GoalKeeper
         Texture2D backgroundStart;
         Texture2D backgroundEnd;
 
-        int kickCount;
         bool mute = false;
 
         public Game1()
@@ -83,10 +80,6 @@ namespace GoalKeeper
             enemyPaddle.Initialize();
             graphics.ApplyChanges();
 
-
-            lives = 5;
-            kickCount = 0;
-
             // Keep track of the game starting and ending
             endGame = false;
             beginGame = false;
@@ -111,7 +104,6 @@ namespace GoalKeeper
             player.LoadContent(Content);
             enemy.LoadContent(Content);
             font = Content.Load<SpriteFont>("DefaultFont");
-            heart = Content.Load<Texture2D>("heart");
             // The image before starting the game
             backgroundStart = Content.Load<Texture2D>("levels");
             backgroundEnd = Content.Load<Texture2D>("end");
@@ -154,13 +146,14 @@ namespace GoalKeeper
             player.Update(gameTime, keylist1);
             enemy.Update(gameTime, keylist2);
             
-            // Bounce off the board
+            // Bounce off the player 1 board
             if (CollisionDetected(paddle.Bounds, ball.Bounds))
-            {            
-                lives--;
-                if (lives > 0)
+            {
+                player.lives--;
+                enemy.score++;
+                if (player.lives > 0)
                     loseLife.Play();
-                else if(lives == 0)
+                else if (player.lives == 0)
                 {
                     gameOver.Play();
                     endGame = true;
@@ -181,9 +174,25 @@ namespace GoalKeeper
                 }
             }
 
+            if(CollisionDetected(enemyPaddle.Bounds, ball.Bounds))
+            {
+                enemy.lives--;
+                player.score++;
+                if (enemy.lives > 0)
+                    loseLife.Play();
+                else if (enemy.lives == 0)
+                {
+                    gameOver.Play();
+                    endGame = true;
+                }
+
+                ball.Velocity.X *= -1;
+                var bounce = (enemyPaddle.Bounds.X + enemyPaddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                ball.Bounds.X += 2 * bounce;
+            }
+
             if (CollisionDetected(player.Bounds, ball.Bounds))
             {
-                kickCount++;
                 paddleHit.Play();
                 ball.Velocity.X *= -1;
                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
@@ -192,6 +201,7 @@ namespace GoalKeeper
 
             if(CollisionDetected(enemy.Bounds, ball.Bounds))
             {
+                paddleHit.Play();
                 ball.Velocity.X *= -1;
                 var bounce = (enemy.Bounds.X + enemy.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
@@ -219,8 +229,17 @@ namespace GoalKeeper
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
 
             }
-            else if (lives <= 0)
+            else if (player.lives <= 0 || enemy.lives <= 0)
             {
+                // Why isn't this working??
+                if(enemy.lives <= 0)
+                {
+                    spriteBatch.DrawString(font, "Player 1 WINS!", new Vector2(425, 0), Color.White);
+                }
+                else if(player.lives <= 0)
+                {
+                    spriteBatch.DrawString(font, "Player 2 WINS!", new Vector2(425, 0), Color.White);
+                }
                 spriteBatch.Draw(backgroundEnd, new Rectangle(0, 0,
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
                 endGame = true;
@@ -233,19 +252,10 @@ namespace GoalKeeper
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
 
-                //For changing the player's comments as the game progresses
-                if(lives == 5 && kickCount == 0)
-                {
-                    spriteBatch.DrawString(font, "Let's play", player.position, Color.White);
-                }
-                if(lives < 2)
-                {
-                    spriteBatch.DrawString(font, "Oh Dear!", player.position, Color.White);
-                }
-                if(lives == 5 && kickCount > 4)
-                {
-                    spriteBatch.DrawString(font, "Whoo hoo!", player.position, Color.White);
-                }
+                spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), player.position, Color.White);
+                spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), enemy.position, Color.White);
+
+
                 if(mute == false)
                 {
                     spriteBatch.DrawString(font, "Press SPACE to mute", new Vector2(425, 0), Color.White);
@@ -254,13 +264,7 @@ namespace GoalKeeper
                 {
                     spriteBatch.DrawString(font, "Press SPACE to unmute", new Vector2(420, 0), Color.White);
                 }
-              
-                int start = 50;
-                for (int i = 0; i < lives; i++)
-                {
-                    spriteBatch.Draw(heart, new Rectangle(graphics.PreferredBackBufferWidth - start, graphics.PreferredBackBufferHeight - 50, 50, 50), Color.White);
-                    start += 50;
-                }
+             
             }                
             
             spriteBatch.End();
@@ -336,8 +340,10 @@ namespace GoalKeeper
                     //Reset the game
                     ball.Initialize();
                     ball.Velocity.Normalize();
-                    kickCount = 0;
-                    lives = 5;
+                    player.score = 0;
+                    enemy.score = 0;
+                    player.lives = 5;
+                    enemy.lives = 5;
                     endGame = false;
                     mute = false;
                     SoundEffect.MasterVolume = 1.0f;
