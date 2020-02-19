@@ -8,27 +8,53 @@ namespace GoalKeeper
 {
     public class Unit
     {
-        public double x_;
-        public double y_;
+        private float x;
+        private float y;
+        private int id;
+        private Unit prev;
+        private Unit next;
+        private Grid grid;
 
-        public Unit prev_;
-        public Unit next_;
-        Grid grid_;
-
-        public Unit(Grid grid, double x, double y)
+        //constructor
+        public Unit(float x, float y, int id, Grid grid)
         {
-            this.grid_ = grid;
-            this.x_ = x;
-            this.y_ = y;
-            prev_ = null;
-            next_ = null;
-            grid_.add(this);
-
+            this.grid = grid;
+            this.x = x;
+            this.y = y;
+            this.id = id;
+            prev = null;
+            next = null;
         }
 
-        public void move(double x, double y)
+        public void Update(float x, float y)
         {
-            grid_.move(this, x, y);
+            grid.Update(this, x, y);
+        }
+
+        //getters and setters
+        public float X
+        {
+            get; set;
+        }
+
+        public float Y
+        {
+            get; set;
+        }
+
+        public int Id
+        {
+            get; set;
+        }
+
+        public Unit Prev
+        {
+            get; set;
+        }
+
+        public Unit Next
+        {
+            get; set;
         }
     }
 }

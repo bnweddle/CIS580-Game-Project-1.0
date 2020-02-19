@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,11 @@ namespace GoalKeeper
 {
     public class Grid
     {
-        public const int NUM_CELLS = 10;
-        public const int CELL_SIZE = 20;
-        private Unit[,] cells_ = new Unit[NUM_CELLS, NUM_CELLS];
-
+        //create 4 quadrants
+        const int NUM_CELLS = 10;
+        const int CELL_SIZE = 150;
+        Unit[,] Cells = new Unit[NUM_CELLS, NUM_CELLS];
+        
         public Grid()
         {
             // Clear the grid.
@@ -19,66 +21,75 @@ namespace GoalKeeper
             {
                 for (int y = 0; y < NUM_CELLS; y++)
                 {
-                    cells_[x,y] = null;
+                    Cells[x,y] = null;
                 }
             }
         }
 
-        public void add(Unit unit)
+        public void Add(Unit unit)
         {
-            // Determine which grid cell it's in.
-            int cellX = (int)(unit.x_ / Grid.CELL_SIZE);
-            int cellY = (int)(unit.y_ / Grid.CELL_SIZE);
+            int cellX = (int)(unit.X / Grid.CELL_SIZE);
+            int cellY = (int)(unit.Y / Grid.CELL_SIZE);
 
-            // Add to the front of list for the cell it's in.
-            unit.prev_ = null;
-            unit.next_ = cells_[cellX,cellY];
-            cells_[cellX,cellY] = unit;
+            unit.Prev = null;
 
-            if (unit.next_ != null)
+            Cells[cellX, cellY] = unit.Next;
+            Cells[cellX, cellY] = unit;
+
+            if (unit.Next != null)
             {
-                unit.next_.prev_ = unit;
+                unit.Next.Prev = unit;
             }
+
         }
 
-        public void move(Unit unit, double x, double y)
+        public void Update(Unit old, float x, float y)
         {
             // See which cell it was in.
-            int oldCellX = (int)(unit.x_ / Grid.CELL_SIZE);
-            int oldCellY = (int)(unit.y_ / Grid.CELL_SIZE);
+            int oldCellX = (int)(old.X / Grid.CELL_SIZE);
+            int oldCellY = (int)(old.Y / Grid.CELL_SIZE);
 
             // See which cell it's moving to.
             int cellX = (int)(x / Grid.CELL_SIZE);
             int cellY = (int)(y / Grid.CELL_SIZE);
 
-            unit.x_ = x;
-            unit.y_ = y;
-
-            // If it didn't change cells, we're done.
-            if (oldCellX == cellX && oldCellY == cellY)
-            {
-                return;
-            }
+            old.X = x;
+            old.Y = y;
 
             // Unlink it from the list of its old cell.
-            if (unit.prev_ != null)
+            if (old.Prev != null)
             {
-                unit.prev_.next_ = unit.next_;
+                old.Prev.Next = old.Next;
             }
 
-            if (unit.next_ != null)
+            if (old.Next != null)
             {
-                unit.next_.prev_ = unit.prev_;
+                old.Next.Prev = old.Prev;
             }
 
             // If it's the head of a list, remove it.
-            if (cells_[oldCellX, oldCellY] == unit)
+            if (Cells[oldCellX, oldCellY] == old)
             {
-                cells_[oldCellX, oldCellY] = unit.next_;
+                Cells[oldCellX, oldCellY] = old.Next;
             }
 
             // Add it back to the grid at its new cell.
-            add(unit);
+            Add(old);
+
+        }
+
+        public void CheckCollisions()
+        {
+            for(int i = 0; i < NUM_CELLS; i++)
+            {
+                for(int j = 0; j < NUM_CELLS; j++)
+                {
+                    foreach(Unit u in Cells)
+                    {
+                        
+                    }
+                }
+            }
         }
 
     }

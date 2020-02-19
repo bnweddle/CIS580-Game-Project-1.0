@@ -45,6 +45,10 @@ namespace GoalKeeper
         Texture2D backgroundEnd;
 
         bool mute = false;
+        public Grid grid = new Grid();
+        Unit unitP1;
+        Unit unitP2;
+        Unit unitB;
 
         public Game1()
         {
@@ -74,6 +78,13 @@ namespace GoalKeeper
             ball.Initialize();
             paddle.Initialize();
             enemyPaddle.Initialize();
+            unitP1 = new Unit(player.position.X, player.position.Y, 1, grid);
+            unitP2 = new Unit(enemy.position.X, enemy.position.Y, 2, grid);
+            unitB = new Unit(ball.Bounds.X, ball.Bounds.Y, 3, grid);
+
+            grid.Add(unitP1);
+            grid.Add(unitP2);
+            grid.Add(unitB);
             graphics.ApplyChanges();
 
             // Keep track of the game starting and ending
@@ -140,7 +151,11 @@ namespace GoalKeeper
             ball.Update(gameTime);
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
-       
+
+            unitB.Update(ball.Bounds.X, ball.Bounds.Y);
+            unitP1.Update(player.position.X, player.position.Y);
+            unitP2.Update(enemy.position.X, enemy.position.Y);
+
             // Bounce off the player 1 board
             if (ball.Bounds.CollidesWith(paddle.Bounds))
             {
@@ -200,16 +215,16 @@ namespace GoalKeeper
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
 
             }
-            else if (player.score >= 5 || enemy.score >= 5)
+            else if (endGame)
             {
                 // Why isn't this working??
                 if(enemy.score == 5)
                 {
-                    spriteBatch.DrawString(font, "Player 2 WINS!", new Vector2(425, 0), Color.White);
+                    spriteBatch.DrawString(font, "Player 2 WINS!", new Vector2(0, 0), Color.White);
                 }
                 else if(player.score == 5)
                 {
-                    spriteBatch.DrawString(font, "Player 1 WINS!", new Vector2(425, 0), Color.White);
+                    spriteBatch.DrawString(font, "Player 1 WINS!", new Vector2(0, 0), Color.White);
                 }
                 spriteBatch.Draw(backgroundEnd, new Rectangle(0, 0,
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);

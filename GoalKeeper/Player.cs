@@ -51,6 +51,7 @@ namespace GoalKeeper
         {
             this.game = game;
             this.position = position;
+            
         }
 
         public void Initialize()
