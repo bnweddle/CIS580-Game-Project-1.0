@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace GoalKeeper
 {
@@ -45,10 +47,10 @@ namespace GoalKeeper
         Texture2D backgroundEnd;
 
         bool mute = false;
+        // Using Spatial Partitioning 
         public Grid grid = new Grid();
         Unit unitP1;
         Unit unitP2;
-        Unit unitB;
 
         public Game1()
         {
@@ -78,13 +80,12 @@ namespace GoalKeeper
             ball.Initialize();
             paddle.Initialize();
             enemyPaddle.Initialize();
+
             unitP1 = new Unit(player.position.X, player.position.Y, 1, grid);
             unitP2 = new Unit(enemy.position.X, enemy.position.Y, 2, grid);
-            unitB = new Unit(ball.Bounds.X, ball.Bounds.Y, 3, grid);
 
             grid.Add(unitP1);
             grid.Add(unitP2);
-            grid.Add(unitB);
             graphics.ApplyChanges();
 
             // Keep track of the game starting and ending
@@ -114,6 +115,7 @@ namespace GoalKeeper
             backgroundStart = Content.Load<Texture2D>("start");
             backgroundEnd = Content.Load<Texture2D>("end");
             // TODO: use this.Content to load your game content here
+
         }
 
         /// <summary>
@@ -152,9 +154,9 @@ namespace GoalKeeper
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
 
-            unitB.Update(ball.Bounds.X, ball.Bounds.Y);
             unitP1.Update(player.position.X, player.position.Y);
             unitP2.Update(enemy.position.X, enemy.position.Y);
+            grid.CheckCollisions();
 
             // Bounce off the player 1 board
             if (ball.Bounds.CollidesWith(paddle.Bounds))

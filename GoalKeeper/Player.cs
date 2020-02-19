@@ -23,7 +23,7 @@ namespace GoalKeeper
         Idle = 4
     }
 
-    public class Player
+    public class Player 
     {
         // how much the animation moves per frames 
         const int ANIMATION_FRAME_RATE = 124;
@@ -50,8 +50,7 @@ namespace GoalKeeper
         public Player(Game1 game, Vector2 position)
         {
             this.game = game;
-            this.position = position;
-            
+            this.position = position;          
         }
 
         public void Initialize()

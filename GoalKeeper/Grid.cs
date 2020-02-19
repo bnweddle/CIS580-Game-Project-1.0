@@ -78,5 +78,36 @@ namespace GoalKeeper
 
         }
 
+        public void CheckCollisions()
+        {
+            for (int x = 0; x < NUM_CELLS; x++)
+            {
+                for (int y = 0; y < NUM_CELLS; y++)
+                {
+                    handleCell(Cells[x,y]);
+                }
+            }
+        }
+
+        public void handleCell(Unit unit)
+        {
+            while (unit != null)
+            {
+                Unit other = unit.Next;
+                while (other != null)
+                {
+                    if (unit.X == other.X &&
+                        unit.Y == other.Y)
+                    {
+                        unit.X -= 1;
+                        unit.Y -= 1;
+                    }
+                    other = other.Next;
+                }
+
+                unit = unit.Next;
+            }
+        }
+
     }
 }
