@@ -78,19 +78,5 @@ namespace GoalKeeper
 
         }
 
-        public void CheckCollisions()
-        {
-            for(int i = 0; i < NUM_CELLS; i++)
-            {
-                for(int j = 0; j < NUM_CELLS; j++)
-                {
-                    foreach(Unit u in Cells)
-                    {
-                        
-                    }
-                }
-            }
-        }
-
     }
 }

@@ -174,7 +174,6 @@ namespace GoalKeeper
 
             }      
             
-            //This only works once, why???
             if(ball.Bounds.CollidesWith(enemyPaddle.Bounds))
             {
                 player.score++;
@@ -187,8 +186,8 @@ namespace GoalKeeper
                 }
 
                 ball.Velocity.X *= -1;
-                float delta = ball.Bounds.Radius - ball.Bounds.X;
-                enemyPaddle.Bounds.X += 2 * delta;
+                float delta = enemyPaddle.Bounds.X - ball.Bounds.X - ball.Bounds.Radius;
+                ball.Bounds.X += 2 * delta;
             }
 
 
