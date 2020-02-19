@@ -3,6 +3,7 @@
  * In class work for Sprite Animation, need to use a state machine to track player movement
  * */
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -41,9 +42,9 @@ namespace GoalKeeper
         public Vector2 position;
         public BoundingRectangle Bounds;
         public int score;
-        public int lives;
         KeyboardState oldState;
         int frame;
+        SoundEffect playerHit;
 
 
         public Player(Game1 game, Vector2 position)
@@ -54,7 +55,6 @@ namespace GoalKeeper
 
         public void Initialize()
         {
-            lives = 5;
             score = 0;
             timer = new TimeSpan(0);
             state = State.Idle;
@@ -65,15 +65,18 @@ namespace GoalKeeper
         public void LoadContent(ContentManager content)
         {
             player = content.Load<Texture2D>("newPlayer");
+            playerHit = content.Load<SoundEffect>("paddle_hit");
         }
 
-        public void Update(GameTime gameTime, Keys[] keys)
+        public void Update(GameTime gameTime, Keys[] keys, Ball ball)
         {
             //Movement
             KeyboardState newState = Keyboard.GetState();
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Bounds.X = position.X;
             Bounds.Y = position.Y;
+
+            CheckCollisions(ball);
 
             if (newState.IsKeyDown(keys[0]))
             {
@@ -146,8 +149,43 @@ namespace GoalKeeper
 
         public void CheckCollisions(Ball ball)
         {
-            // Check for player collisions and bounce ball off players
-            //HOW to do this part?????
+            Vector2 collisionPoint; 
+            if(ball.Bounds.CollidesWith(Bounds, out collisionPoint))
+            {
+                //left side - good
+               if(Bounds.X == collisionPoint.X)
+                {
+                    ball.Velocity.X *= -1;
+                    float delta = ball.Bounds.Radius - ball.Bounds.X;
+                    Bounds.X += 2 * delta;
+                    playerHit.Play();
+                }
+                //top - good
+                if(Bounds.Y == collisionPoint.Y)
+                {
+                    ball.Velocity.Y *= -1;
+                    float delta = ball.Bounds.Radius - ball.Bounds.Y;
+                    Bounds.Y += 2 * delta;
+                    playerHit.Play();
+                }
+                //right - good
+                if (Bounds.X + Bounds.Width == collisionPoint.X)
+                {
+                    ball.Velocity.X *= -1;
+                    var bounce = (Bounds.X + Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
+                    ball.Bounds.X += 2 * bounce;
+                    playerHit.Play();
+                }
+                //bottom - good
+                if(Bounds.Y + Bounds.Height == collisionPoint.Y)
+                {
+                    ball.Velocity.Y *= -1;
+                    float delta = (Bounds.Y + Bounds.Height) - (ball.Bounds.Y - ball.Bounds.Radius);
+                    ball.Bounds.Y += 2 * delta;
+                    playerHit.Play();
+                }
+
+            }
         }
 
     }

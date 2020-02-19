@@ -39,7 +39,6 @@ namespace GoalKeeper
         // Sound effects for losing lives, hitting paddle, ending game;
         SoundEffect loseLife;
         SoundEffect gameOver;
-        SoundEffect paddleHit;
 
         // For background start and end page
         Texture2D backgroundStart;
@@ -94,7 +93,6 @@ namespace GoalKeeper
             spriteBatch = new SpriteBatch(GraphicsDevice);
             loseLife = Content.Load<SoundEffect>("lose_life");
             gameOver = Content.Load<SoundEffect>("game_over");
-            paddleHit = Content.Load<SoundEffect>("paddle_hit");
             ball.LoadContent(Content);
             paddle.LoadContent(Content);
             enemyPaddle.LoadContent(Content);
@@ -140,18 +138,16 @@ namespace GoalKeeper
             Keys[] keylist2 = { Keys.Up, Keys.Left, Keys.Right, Keys.Down };
 
             ball.Update(gameTime);
-            player.Update(gameTime, keylist1);
-            enemy.Update(gameTime, keylist2);
-
-            /*
+            player.Update(gameTime, keylist1, ball);
+            enemy.Update(gameTime, keylist2, ball);
+       
             // Bounce off the player 1 board
-            if (CollisionDetected(paddle.Bounds, ball.Bounds))
+            if (ball.Bounds.CollidesWith(paddle.Bounds))
             {
-                player.lives--;
                 enemy.score++;
-                if (player.lives > 0)
+                if (enemy.score < 5)
                     loseLife.Play();
-                else if (player.lives == 0)
+                else if (enemy.score == 5)
                 {
                     gameOver.Play();
                     endGame = true;
@@ -161,42 +157,24 @@ namespace GoalKeeper
                 var bounce = (paddle.Bounds.X + paddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
                 ball.Bounds.X += 2 * bounce;
 
-            }
-
+            }      
             
-            if(CollisionDetected(enemyPaddle.Bounds, ball.Bounds))
+            //This only works once, why???
+            if(ball.Bounds.CollidesWith(enemyPaddle.Bounds))
             {
-                enemy.lives--;
                 player.score++;
-                if (enemy.lives > 0)
+                if (player.score < 5)
                     loseLife.Play();
-                else if (enemy.lives == 0)
+                else if (player.score == 5)
                 {
                     gameOver.Play();
                     endGame = true;
                 }
 
                 ball.Velocity.X *= -1;
-                var bounce = (enemyPaddle.Bounds.X + enemyPaddle.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
-                ball.Bounds.X += 2 * bounce;
+                float delta = ball.Bounds.Radius - ball.Bounds.X;
+                enemyPaddle.Bounds.X += 2 * delta;
             }
-            
-
-             if (CollisionDetected(player.Bounds, ball.Bounds))
-             {
-                 paddleHit.Play();
-                 ball.Velocity.X *= -1;
-                 var bounce = (player.Bounds.X + player.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
-                 ball.Bounds.X += 2 * bounce;
-             }
-
-             if(CollisionDetected(enemy.Bounds, ball.Bounds))
-             {
-                 paddleHit.Play();
-                 ball.Velocity.X *= -1;
-                 var bounce = (enemy.Bounds.X + enemy.Bounds.Width) - (ball.Bounds.X - ball.Bounds.Radius);
-                 ball.Bounds.X += 2 * bounce;
-             } */
 
 
             oldState = newState;
@@ -222,7 +200,7 @@ namespace GoalKeeper
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
 
             }
-            else if (player.lives <= 0 || enemy.lives <= 0)
+            else if (player.score >= 5 || enemy.score >= 5)
             {
                 // Why isn't this working??
                 if(enemy.score == 5)
@@ -244,8 +222,8 @@ namespace GoalKeeper
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
 
-                spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), player.position, Color.White);
-                spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), enemy.position, Color.White);
+                spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), new Vector2(20,0), Color.White);
+                spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), new Vector2(900, 0), Color.White);
 
 
                 if(mute == false)
@@ -298,8 +276,6 @@ namespace GoalKeeper
                     ball.Velocity.Normalize();
                     player.score = 0;
                     enemy.score = 0;
-                    player.lives = 5;
-                    enemy.lives = 5;
                     endGame = false;
                     mute = false;
                     SoundEffect.MasterVolume = 1.0f;
@@ -327,11 +303,7 @@ namespace GoalKeeper
             }
         }
 
-        public bool CollisionDetected(BoundingRectangle r, BoundingCircle c)
-        {
-            var closestX = Math.Max(r.X, Math.Min(c.X, r.X + r.Width));
-            var closestY = Math.Max(r.Y, Math.Min(c.Y, r.Y + r.Height));
-            return (Math.Pow(c.Radius, 2) >= Math.Pow(closestX - c.X, 2) + Math.Pow(closestY - c.Y, 2));
-        }
+
+       
     }
 }

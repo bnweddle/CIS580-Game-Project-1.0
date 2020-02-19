@@ -21,17 +21,29 @@ namespace GoalKeeper
                 || a.Y > b.Y + b.Height
                 || a.Y + a.Height < b.Y);
         }
+        public static bool CollidesWith(this BoundingRectangle r, BoundingCircle c)
+        {
+            Vector2 collisionPoint;
+            return CollidesWith(r, c, out collisionPoint);
 
-        public static bool CollidesWith(this BoundingCircle c, BoundingRectangle r)
+        }
+        public static bool CollidesWith(this BoundingRectangle r, BoundingCircle c, out Vector2 collisionPoint)
         {
             var closestX = Math.Max(r.X, Math.Min(c.X, r.X + r.Width));
             var closestY = Math.Max(r.Y, Math.Min(c.Y, r.Y + r.Height));
+            collisionPoint.X = closestX;
+            collisionPoint.Y = closestY;
             return (Math.Pow(c.Radius, 2) >= Math.Pow(closestX - c.X, 2) + Math.Pow(closestY - c.Y, 2));
         }
 
-        public static bool CollidesWith(this BoundingRectangle r, BoundingCircle c)
+        public static bool CollidesWith(this BoundingCircle c, BoundingRectangle r, out Vector2 cp)
         {
-            return c.CollidesWith(r);
+            return r.CollidesWith(c, out cp);
+        }
+
+        public static bool CollidesWith(this BoundingCircle c, BoundingRectangle r)
+        {
+            return r.CollidesWith(c);
         }
 
         public static bool CollidesWith(this Vector2 v, Vector2 other)

@@ -8,7 +8,6 @@ namespace GoalKeeper
 {
     public class Unit
     {
-
         public double x_;
         public double y_;
 

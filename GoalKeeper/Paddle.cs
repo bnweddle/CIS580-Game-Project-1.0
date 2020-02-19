@@ -80,5 +80,6 @@ namespace GoalKeeper
         {
             spriteBatch.Draw(texture, position, Bounds, Color.White);
         }
-    }
+
+        }
 }
