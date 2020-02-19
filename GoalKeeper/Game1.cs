@@ -44,7 +44,8 @@ namespace GoalKeeper
 
         // For background start and end page
         Texture2D backgroundStart;
-        Texture2D backgroundEnd;
+        Texture2D player1Wins;
+        Texture2D player2Wins;
 
         bool mute = false;
         // Using Spatial Partitioning 
@@ -113,7 +114,8 @@ namespace GoalKeeper
             font = Content.Load<SpriteFont>("DefaultFont");
             // The image before starting the game
             backgroundStart = Content.Load<Texture2D>("start");
-            backgroundEnd = Content.Load<Texture2D>("end");
+            player1Wins = Content.Load<Texture2D>("end1");
+            player2Wins = Content.Load<Texture2D>("end2");
             // TODO: use this.Content to load your game content here
 
         }
@@ -221,14 +223,15 @@ namespace GoalKeeper
                 // Why isn't this working??
                 if(enemy.score == 5)
                 {
-                    spriteBatch.DrawString(font, "Player 2 WINS!", new Vector2(0, 0), Color.White);
+                    spriteBatch.Draw(player2Wins, new Rectangle(0, 0,
+                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
                 }
                 else if(player.score == 5)
                 {
-                    spriteBatch.DrawString(font, "Player 1 WINS!", new Vector2(0, 0), Color.White);
-                }
-                spriteBatch.Draw(backgroundEnd, new Rectangle(0, 0,
+                    spriteBatch.Draw(player1Wins, new Rectangle(0, 0,
                 (int)graphics.PreferredBackBufferWidth, (int)graphics.PreferredBackBufferHeight), Color.White);
+                }
+                
             }
             else
             {
@@ -292,6 +295,10 @@ namespace GoalKeeper
                     ball.Velocity.Normalize();
                     player.score = 0;
                     enemy.score = 0;
+                    player.position = new Vector2(200, 200);
+                    enemy.position = new Vector2(800, 200);
+                    player.state = State.Idle;
+                    enemy.state = State.Idle;
                     endGame = false;
                     mute = false;
                     SoundEffect.MasterVolume = 1.0f;

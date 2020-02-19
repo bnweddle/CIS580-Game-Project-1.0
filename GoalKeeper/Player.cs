@@ -37,7 +37,7 @@ namespace GoalKeeper
 
         Game1 game;
         Texture2D player;
-        State state;
+        public State state;
         TimeSpan timer;
         public Vector2 position;
         public BoundingRectangle Bounds;
