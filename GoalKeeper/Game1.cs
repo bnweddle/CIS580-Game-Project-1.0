@@ -253,16 +253,19 @@ namespace GoalKeeper
 
                 spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), new Vector2(20,0), Color.White);
                 spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), new Vector2(900, 0), Color.White);
+               
+
+                if(camera.Zoom == false)
+                    spriteBatch.DrawString(font, "Use left-click to Zoom in", new Vector2(415, view.Height - 20), Color.White);
+                if(camera.Zoom == true)
+                    spriteBatch.DrawString(font, "Use right-click to Zoom out", new Vector2(415, view.Height - 20), Color.White);
 
 
-                if(mute == false)
-                {
+
+                if (mute == false)
                     spriteBatch.DrawString(font, "Press M to mute", new Vector2(425, 0), Color.White);
-                }
                 if(mute == true)
-                {
                     spriteBatch.DrawString(font, "Press M to unmute", new Vector2(420, 0), Color.White);
-                }
              
             }                
             

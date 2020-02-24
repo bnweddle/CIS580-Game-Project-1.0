@@ -25,6 +25,7 @@ namespace GoalKeeper
         Vector2 Position;
         Matrix matrix;
         float scale = 1.0f;
+        public bool Zoom = false;
 
         public Matrix Matrix
         {
@@ -59,9 +60,15 @@ namespace GoalKeeper
 
 
             if (mouse.LeftButton == ButtonState.Pressed)
-                scale += 0.01f;
+            {
+                scale += 0.02f;
+                Zoom = true;
+            }
             else if(mouse.RightButton == ButtonState.Pressed)
-                scale -= 0.01f;
+            {
+                scale -= 0.02f;
+                Zoom = false;
+            }
 
             //Used for debugging
             //Debug.WriteLine($"Scale : {scale}");
