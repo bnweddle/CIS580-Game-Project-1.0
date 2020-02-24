@@ -27,6 +27,10 @@ namespace GoalKeeper
         Player player;
         Player enemy;
 
+        Camera camera = new Camera();
+        Viewport view;
+        MouseState mouse;
+
         // For the ball starting point velocity
         public Random Random = new Random();
 
@@ -75,6 +79,10 @@ namespace GoalKeeper
             // TODO: Add your initialization logic here
             graphics.PreferredBackBufferWidth = 1042;
             graphics.PreferredBackBufferHeight = 768;
+            view.Width = 1042;
+            view.Height = 768;
+
+            IsMouseVisible = true;
 
             player.Initialize();
             enemy.Initialize();
@@ -82,8 +90,8 @@ namespace GoalKeeper
             paddle.Initialize();
             enemyPaddle.Initialize();
 
-            unitP1 = new Unit(player.position.X, player.position.Y, 1, grid);
-            unitP2 = new Unit(enemy.position.X, enemy.position.Y, 2, grid);
+            unitP1 = new Unit(player.Position.X, player.Position.Y, 1, grid);
+            unitP2 = new Unit(enemy.Position.X, enemy.Position.Y, 2, grid);
 
             grid.Add(unitP1);
             grid.Add(unitP2);
@@ -138,6 +146,7 @@ namespace GoalKeeper
         {
 
             newState = Keyboard.GetState();
+            mouse = new MouseState();
 
             BeginGame();
             // Why do I have to hit spacebar twice?
@@ -155,9 +164,10 @@ namespace GoalKeeper
             ball.Update(gameTime);
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
+            camera.Update(mouse, view);
 
-            unitP1.Update(player.position.X, player.position.Y);
-            unitP2.Update(enemy.position.X, enemy.position.Y);
+            unitP1.Update(player.Position.X, player.Position.Y);
+            unitP2.Update(enemy.Position.X, enemy.Position.Y);
             grid.CheckCollisions();
 
             // Bounce off the player 1 board
@@ -208,8 +218,7 @@ namespace GoalKeeper
         {
             GraphicsDevice.Clear(Color.SeaGreen);
 
-            // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.Matrix);
 
             if (!beginGame)
             {
@@ -295,8 +304,8 @@ namespace GoalKeeper
                     ball.Velocity.Normalize();
                     player.score = 0;
                     enemy.score = 0;
-                    player.position = new Vector2(200, 200);
-                    enemy.position = new Vector2(800, 200);
+                    player.Position = new Vector2(200, 200);
+                    enemy.Position = new Vector2(800, 200);
                     player.state = State.Idle;
                     enemy.state = State.Idle;
                     endGame = false;

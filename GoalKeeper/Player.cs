@@ -39,7 +39,7 @@ namespace GoalKeeper
         Texture2D player;
         public State state;
         TimeSpan timer;
-        public Vector2 position;
+        public Vector2 Position;
         public BoundingRectangle Bounds;
         public int score;
         KeyboardState oldState;
@@ -50,7 +50,7 @@ namespace GoalKeeper
         public Player(Game1 game, Vector2 position)
         {
             this.game = game;
-            this.position = position;          
+            this.Position = position;          
         }
 
         public void Initialize()
@@ -73,49 +73,49 @@ namespace GoalKeeper
             //Movement
             KeyboardState newState = Keyboard.GetState();
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Bounds.X = position.X;
-            Bounds.Y = position.Y;
+            Bounds.X = Position.X;
+            Bounds.Y = Position.Y;
 
             CheckCollisions(ball);
 
             if (newState.IsKeyDown(keys[0]))
             {
                 state = State.North;
-                position.Y -= delta * PLAYER_SPEED;
+                Position.Y -= delta * PLAYER_SPEED;
             }
             else if (newState.IsKeyDown(keys[1]))
             {
                 state = State.West;
-                position.X -= delta * PLAYER_SPEED;
+                Position.X -= delta * PLAYER_SPEED;
             }
             else if (newState.IsKeyDown(keys[2]))
             {
                 state = State.East;
-                position.X += delta * PLAYER_SPEED;
+                Position.X += delta * PLAYER_SPEED;
             }
             else if (newState.IsKeyDown(keys[3]))
             {
                 state = State.South;
-                position.Y += delta * PLAYER_SPEED;
+                Position.Y += delta * PLAYER_SPEED;
             }
             else state = State.Idle;
 
             // Making sure player doesn't go off screen
-            if (position.Y < 0)
+            if (Position.Y < 0)
             {
-                position.Y = 0;
+                Position.Y = 0;
             }
-            if (position.X < 0)
+            if (Position.X < 0)
             {
-                position.X = 0;
+                Position.X = 0;
             }
-            if (position.Y > game.GraphicsDevice.Viewport.Height - FRAME_HEIGHT)
+            if (Position.Y > game.GraphicsDevice.Viewport.Height - FRAME_HEIGHT)
             {
-                position.Y = game.GraphicsDevice.Viewport.Height - FRAME_HEIGHT;
+                Position.Y = game.GraphicsDevice.Viewport.Height - FRAME_HEIGHT;
             }
-            if (position.X > game.GraphicsDevice.Viewport.Width - FRAME_WIDTH)
+            if (Position.X > game.GraphicsDevice.Viewport.Width - FRAME_WIDTH)
             {
-                position.X = game.GraphicsDevice.Viewport.Width - FRAME_WIDTH;
+                Position.X = game.GraphicsDevice.Viewport.Width - FRAME_WIDTH;
             }
 
             // update animation timer when the player is moving
@@ -144,7 +144,7 @@ namespace GoalKeeper
                 FRAME_HEIGHT
                 );
 
-            spriteBatch.Draw(player, position, rectSource, Color.White);
+            spriteBatch.Draw(player, Position, rectSource, Color.White);
         }
 
         public void CheckCollisions(Ball ball)
