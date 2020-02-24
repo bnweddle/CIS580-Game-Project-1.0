@@ -146,7 +146,7 @@ namespace GoalKeeper
         {
 
             newState = Keyboard.GetState();
-            mouse = new MouseState();
+            mouse = Mouse.GetState();
 
             BeginGame();
             // Why do I have to hit spacebar twice?
@@ -229,7 +229,6 @@ namespace GoalKeeper
             }
             else if (endGame)
             {
-                // Why isn't this working??
                 if(enemy.score == 5)
                 {
                     spriteBatch.Draw(player2Wins, new Rectangle(0, 0,
