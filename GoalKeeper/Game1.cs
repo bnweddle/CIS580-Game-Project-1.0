@@ -27,6 +27,7 @@ namespace GoalKeeper
         Player player;
         Player enemy;
 
+        //Used for Zooming/Matrix
         Camera camera = new Camera();
         Viewport view;
         MouseState mouse;
@@ -218,6 +219,7 @@ namespace GoalKeeper
         {
             GraphicsDevice.Clear(Color.SeaGreen);
 
+            //Passing in the Camera Matrix to allow zooming capability
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.Matrix);
 
             if (!beginGame)

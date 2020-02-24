@@ -1,6 +1,7 @@
 ﻿/* Camera.cs
  * Author: Bethany Weddle
- * 2-24-20
+ * I followed this tutorial to learn how to implement Zooming:
+ * https://www.youtube.com/watch?v=lS2Vu8SD2uY
  * */
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,9 +20,7 @@ namespace GoalKeeper
     /// Sprite.Begin and Matrices requirement
     /// </summary>
     public class Camera
-    {
-        // I followed this tutorial to implement Zooming
-        // https://www.youtube.com/watch?v=lS2Vu8SD2uY
+    {       
 
         Vector2 Position;
         Matrix matrix;

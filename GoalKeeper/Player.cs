@@ -13,6 +13,7 @@ namespace GoalKeeper
 {
     /// <summary>
     /// For which direction the player is facing
+    /// This satisfies the State Pattern requirement
     /// </summary>
     public enum State
     {
