@@ -17,7 +17,7 @@ namespace GoalKeeper
 
         public float Y;
 
-        public float Radius;
+        public float Radius => 25;
 
         public Vector2 Center
         {
@@ -30,11 +30,11 @@ namespace GoalKeeper
         }
 
         //Constructor
-        public BoundingCircle(float x, float y, float radius)
+        public BoundingCircle(float x, float y)
         {
             this.X = x;
             this.Y = y;
-            this.Radius = radius;
+            //this.Radius = radius;
         }
 
         public bool CollidesWith(BoundingCircle other)

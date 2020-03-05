@@ -20,12 +20,14 @@ namespace GoalKeeper
         /// <summary>
         /// The ball's texture
         /// </summary>
-        Texture2D texture;
+        public Texture2D texture;
 
         /// <summary>
         /// The ball's bounds
         /// </summary>
         public BoundingCircle Bounds;
+
+        public Vector2 Position;
 
         /// <summary>
         /// The ball's velocity vector
@@ -41,9 +43,10 @@ namespace GoalKeeper
         /// Creates a new ball
         /// </summary>
         /// <param name="game">The game the ball belongs to</param>
-        public Ball(Game1 game)
+        public Ball(Vector2 position)
         {
-            this.game = game;
+            position = Position;
+            
         }
 
         /// <summary>
@@ -51,19 +54,21 @@ namespace GoalKeeper
         /// of the screen and giving it a random velocity
         /// vector of length 1.
         /// </summary>
-        public void Initialize()
+        public void Initialize(Game1 g)
         {
+
+            this.game = g;
 
             Velocity = new Vector2(
                 (float)game.Random.NextDouble(),
                 (float)game.Random.NextDouble());
 
             // Set the ball's radius
-            Bounds.Radius = 25;
+            // Bounds.Radius = 25;
 
             // position the ball in the center of the screen
-            Bounds.X = game.GraphicsDevice.Viewport.Width / 2;
-            Bounds.Y = game.GraphicsDevice.Viewport.Height / 2;        
+            Bounds.X = Position.X;
+            Bounds.Y = Position.Y;       
 
             Velocity.Normalize();
         }

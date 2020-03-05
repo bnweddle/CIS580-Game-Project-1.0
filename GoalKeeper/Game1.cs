@@ -64,7 +64,8 @@ namespace GoalKeeper
             Content.RootDirectory = "Content";
             paddle = new Paddle(this, new Vector2(0, graphics.PreferredBackBufferHeight / 2));
             enemyPaddle = new Paddle(this, new Vector2(992, graphics.PreferredBackBufferHeight / 2));
-            ball = new Ball(this);
+            ball = new Ball(
+                new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2));
             player = new Player(this, new Vector2(200, 200));
             enemy = new Player(this, new Vector2(800, 200));
         }
@@ -87,7 +88,7 @@ namespace GoalKeeper
 
             player.Initialize();
             enemy.Initialize();
-            ball.Initialize();
+            ball.Initialize(this);
             paddle.Initialize();
             enemyPaddle.Initialize();
 
@@ -290,7 +291,7 @@ namespace GoalKeeper
                 ball.Velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
-                    ball.Initialize();
+                    ball.Initialize(this);
                     ball.Velocity.Normalize();
                     endGame = false;
                     beginGame = true;
@@ -304,7 +305,7 @@ namespace GoalKeeper
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
                     //Reset the game
-                    ball.Initialize();
+                    ball.Initialize(this);
                     ball.Velocity.Normalize();
                     player.score = 0;
                     enemy.score = 0;
