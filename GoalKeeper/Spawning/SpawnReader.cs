@@ -2,12 +2,8 @@
  * CIS580 Project 5
  * Read in the balls created from the file
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 using TRead = GoalKeeper.Spawnset;
 

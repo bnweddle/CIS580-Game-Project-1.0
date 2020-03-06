@@ -116,6 +116,11 @@
 /processorParam:TextureFormat=Color
 /build:levels.png
 
+#begin locations.spawn
+/importer:
+/processor:
+/build:locations.spawn
+
 #begin lose_life.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

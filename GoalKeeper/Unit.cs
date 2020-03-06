@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿/*Author: Bethany Weddle
+ *CIS580 Project 3
+ */
 namespace GoalKeeper
 {
     public class Unit
