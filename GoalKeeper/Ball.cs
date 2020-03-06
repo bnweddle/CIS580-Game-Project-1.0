@@ -60,8 +60,8 @@ namespace GoalKeeper
             this.game = g;
 
             Velocity = new Vector2(
-                (float)game.Random.NextDouble(),
-                (float)game.Random.NextDouble());
+                (float)g.Random.NextDouble(),
+                (float)g.Random.NextDouble());
 
             // Set the ball's radius
             // Bounds.Radius = 25;

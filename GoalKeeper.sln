@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalKeeper", "GoalKeeper\GoalKeeper.csproj", "{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpawnLibrary", "..\platformer-windows-example\PlatformLibrary\SpawnLibrary.csproj", "{5205DA9A-B8C2-44F1-A6AE-4EEC30983B4F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpawnContentExtension", "..\platformer-windows-example\PlatformerContentExtension\SpawnContentExtension.csproj", "{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5205DA9A-B8C2-44F1-A6AE-4EEC30983B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5205DA9A-B8C2-44F1-A6AE-4EEC30983B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5205DA9A-B8C2-44F1-A6AE-4EEC30983B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5205DA9A-B8C2-44F1-A6AE-4EEC30983B4F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -53,6 +53,9 @@
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spawning\Spawn.cs" />
+    <Compile Include="Spawning\SpawnReader.cs" />
+    <Compile Include="Spawning\Spawnset.cs" />
     <Compile Include="Unit.cs" />
   </ItemGroup>
   <ItemGroup>

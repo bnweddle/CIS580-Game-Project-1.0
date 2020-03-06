@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace GoalKeeper
 {
+    
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
@@ -57,6 +58,10 @@ namespace GoalKeeper
         public Grid grid = new Grid();
         Unit unitP1;
         Unit unitP2;
+
+        //For the spawning 
+        //How do I get the Spawn Library???
+        
 
         public Game1()
         {
