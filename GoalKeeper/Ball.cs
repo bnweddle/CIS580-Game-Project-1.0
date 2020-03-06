@@ -42,10 +42,11 @@ namespace GoalKeeper
         /// Creates a new ball
         /// </summary>
         /// <param name="game">The game the ball belongs to</param>
-        public Ball(Vector2 position)
+        public Ball(Vector2 position, Texture2D texture2)
         {
             position = Position;
-            
+            texture = texture2;
+           
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace GoalKeeper
         /// <param name="content">The ContentManager to use</param>
         public void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("ball");
+           // texture = content.Load<Texture2D>("ball");
             bounceX = content.Load<SoundEffect>("bounce");
         }
 

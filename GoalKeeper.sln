@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalKeeper", "GoalKeeper\GoalKeeper.csproj", "{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpawnContentExtension", "..\platformer-windows-example\PlatformerContentExtension\SpawnContentExtension.csproj", "{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpawnContentExtension", "SpawnContentExtension\SpawnContentExtension.csproj", "{947B60B5-60B8-4F7B-87B2-7F45281B8FA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{996AEB58-3F9C-446A-A6E0-D7EE0E45FF3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90F19AF9-4EA3-4C7C-A304-F2A59B540AB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{947B60B5-60B8-4F7B-87B2-7F45281B8FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{947B60B5-60B8-4F7B-87B2-7F45281B8FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{947B60B5-60B8-4F7B-87B2-7F45281B8FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{947B60B5-60B8-4F7B-87B2-7F45281B8FA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

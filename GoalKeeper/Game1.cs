@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace GoalKeeper
 {
@@ -58,7 +59,7 @@ namespace GoalKeeper
         Unit unitP2;
 
         //For the spawning 
-        Spawnset spawnset;
+        List<Ball> spawnedBalls;
 
 
         public Game1()
@@ -132,7 +133,7 @@ namespace GoalKeeper
             // TODO: use this.Content to load your game content here
 
             //Load the positions in the file
-            spawnset = Content.Load<Spawnset>("locations");
+            spawnedBalls = Content.Load<List<Ball>>("locations");
 
         }
 
@@ -259,9 +260,9 @@ namespace GoalKeeper
                 enemy.Draw(spriteBatch);
                 
                 //Spawn and Draw the balls on the screen
-                for(int i = 0; i < spawnset.Count; i++)
+                for(int i = 0; i < spawnedBalls.Count; i++)
                 {
-                    spawnset[i].Draw(spriteBatch);
+                    spawnedBalls[i].Draw(spriteBatch);
                 }
 
                 spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), new Vector2(20,0), Color.White);

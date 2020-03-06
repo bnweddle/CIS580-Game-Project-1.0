@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\SpawnContentExtension\bin\Debug\SpawnContentExtension.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -117,8 +118,8 @@
 /build:levels.png
 
 #begin locations.spawn
-/importer:
-/processor:
+/importer:SpawnImporter
+/processor:SpawnProcessor
 /build:locations.spawn
 
 #begin lose_life.wav

@@ -4,8 +4,11 @@
  */
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
-using TRead = GoalKeeper.Spawnset;
+
+using TRead = System.Collections.Generic.List<GoalKeeper.Ball>;
 
 namespace GoalKeeper
 {
@@ -15,18 +18,22 @@ namespace GoalKeeper
         {
             int numToSpawn = input.ReadInt32();
 
-            var balls = new Spawn[numToSpawn];
+            var list = new List<Ball>();
 
             for (int i = 0; i < numToSpawn; i++)
             {
-                var source = new Ball(new Vector2(
+                var vector = new Vector2(
                     input.ReadInt32(),
-                    input.ReadInt32()));
+                    input.ReadInt32());
 
-                balls[i] = new Spawn(source);
-            }    
-            // Construct and return the Spawnset
-            return new Spawnset(balls);
+                var texture = input.ReadExternalReference<Texture2D>();
+
+                var ball = new Ball(vector, texture);
+
+                list.Add(ball);
+            }
+
+            return list;
         }
     }
 }
