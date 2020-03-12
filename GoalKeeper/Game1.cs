@@ -54,7 +54,7 @@ namespace GoalKeeper
         Texture2D player1Wins;
         Texture2D player2Wins;
 
-        bool mute = false;
+        bool mute = true;
         // Using Spatial Partitioning 
         public Grid grid = new Grid();
         Unit unitP1;
@@ -95,8 +95,10 @@ namespace GoalKeeper
 
             player.Initialize();
             enemy.Initialize();
-            ball.Initialize(this);
-
+            if(!beginGame)
+            {
+                ball.Initialize(this);
+            }
             paddle.Initialize();
             enemyPaddle.Initialize();
 
@@ -110,6 +112,7 @@ namespace GoalKeeper
             // Keep track of the game starting and ending
             endGame = false;
             beginGame = false;
+            SoundEffect.MasterVolume = 0.0f;
 
             base.Initialize();
         }
@@ -180,8 +183,8 @@ namespace GoalKeeper
             Keys[] keylist1 = { Keys.W, Keys.A, Keys.D, Keys.S };
             Keys[] keylist2 = { Keys.Up, Keys.Left, Keys.Right, Keys.Down };
 
-            ball.Update(gameTime);
 
+            ball.Update(gameTime);
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
             camera.Update(mouse, view);
@@ -274,12 +277,14 @@ namespace GoalKeeper
                 enemyPaddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
-                
+
                 //Spawn and Draw the balls on the screen
-                for(int i = 0; i < spawnedBalls.Count; i++)
+                for (int i = 0; i < spawnedBalls.Count; i++)
                 {
                     spawnedBalls[i].Draw(spriteBatch, ballText);
                 }
+
+                oldState = newState;
 
                 spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), new Vector2(20,0), Color.White);
                 spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), new Vector2(900, 0), Color.White);
@@ -308,6 +313,7 @@ namespace GoalKeeper
             // Got general idea for outline of code from 
             // https://docs.microsoft.com/en-us/windows/uwp/get-started/get-started-tutorial-game-mg2d
             KeyboardState keyboardState = Keyboard.GetState();
+            
 
             // Quit the game if Escape is pressed.
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
