@@ -97,11 +97,6 @@ namespace GoalKeeper
             enemy.Initialize();
             ball.Initialize(this);
 
-            foreach (Ball b in spawnedBalls)
-            {
-                b.Initialize(this);
-            }
-
             paddle.Initialize();
             enemyPaddle.Initialize();
 
@@ -145,6 +140,10 @@ namespace GoalKeeper
             //Load the positions in the file
             spawnedBalls = Content.Load<List<Ball>>("locations");
 
+            for (int i = 0; i < spawnedBalls.Count; i++)
+            {
+                spawnedBalls[i].Initialize(this);
+            }
 
         }
 
@@ -187,6 +186,10 @@ namespace GoalKeeper
             enemy.Update(gameTime, keylist2, ball);
             camera.Update(mouse, view);
 
+            for (int i = 0; i < spawnedBalls.Count; i++)
+            {
+                spawnedBalls[i].Update(gameTime);
+            }
 
             unitP1.Update(player.Position.X, player.Position.Y);
             unitP2.Update(enemy.Position.X, enemy.Position.Y);
@@ -272,11 +275,11 @@ namespace GoalKeeper
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
                 
-                //Spawn and Draw the balls on the screen, It's null???
-                /*for(int i = 0; i < spawnedBalls.Count; i++)
+                //Spawn and Draw the balls on the screen
+                for(int i = 0; i < spawnedBalls.Count; i++)
                 {
-                    spawnedBalls[i].Draw(spriteBatch);
-                }*/
+                    spawnedBalls[i].Draw(spriteBatch, ballText);
+                }
 
                 spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), new Vector2(20,0), Color.White);
                 spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), new Vector2(900, 0), Color.White);

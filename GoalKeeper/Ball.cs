@@ -89,7 +89,7 @@ namespace GoalKeeper
         /// <param name="gameTime">The current GameTime</param>
         public void Update(GameTime gameTime)
         {
-            var viewport = game.GraphicsDevice.Viewport;
+            //var viewport = game.GraphicsDevice.Viewport;
 
             Bounds.Center += (float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.50f * Velocity;
 
@@ -99,15 +99,17 @@ namespace GoalKeeper
                 Velocity.Y *= -1;
                 float delta = Bounds.Radius - Bounds.Y;
                 Bounds.Y += 2 * delta;
-                bounceX.Play();
+                if(bounceX != null)
+                    bounceX.Play();
             }
 
-            if (Bounds.Center.Y > viewport.Height - Bounds.Radius)
+            if (Bounds.Center.Y > game.GraphicsDevice.Viewport.Height - Bounds.Radius)
             {
                 Velocity.Y *= -1;
-                float delta = viewport.Height - Bounds.Radius - Bounds.Y;
+                float delta = game.GraphicsDevice.Viewport.Height - Bounds.Radius - Bounds.Y;
                 Bounds.Y += 2 * delta;
-                bounceX.Play();
+                if (bounceX != null)
+                    bounceX.Play();
             }
 
             if (Bounds.X < Bounds.Radius)
@@ -115,16 +117,18 @@ namespace GoalKeeper
                 Velocity.X *= -1;
                 float delta = Bounds.Radius - Bounds.X;
                 Bounds.X += 2 * delta;
-                bounceX.Play();
+                if (bounceX != null)
+                    bounceX.Play();
             }
 
 
-            if (Bounds.X > viewport.Width - Bounds.Radius)
+            if (Bounds.X > game.GraphicsDevice.Viewport.Width - Bounds.Radius)
             {
                 Velocity.X *= -1;
-                float delta = viewport.Width - Bounds.Radius - Bounds.X;
+                float delta = game.GraphicsDevice.Viewport.Width - Bounds.Radius - Bounds.X;
                 Bounds.X += 2 * delta;
-                bounceX.Play();
+                if (bounceX != null)
+                    bounceX.Play();
             }
         }
 
