@@ -27,6 +27,8 @@ namespace GoalKeeper
         Player player;
         Player enemy;
 
+        Texture2D ballText;
+
         //Used for Zooming/Matrix
         Camera camera = new Camera();
         Viewport view;
@@ -69,9 +71,10 @@ namespace GoalKeeper
             paddle = new Paddle(this, new Vector2(0, graphics.PreferredBackBufferHeight / 2));
             enemyPaddle = new Paddle(this, new Vector2(992, graphics.PreferredBackBufferHeight / 2));
             ball = new Ball(
-                new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2));
+                new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), ballText);
             player = new Player(this, new Vector2(200, 200));
             enemy = new Player(this, new Vector2(800, 200));
+            spawnedBalls = new List<Ball>();
         }
 
         /// <summary>
@@ -93,6 +96,12 @@ namespace GoalKeeper
             player.Initialize();
             enemy.Initialize();
             ball.Initialize(this);
+
+            foreach (Ball b in spawnedBalls)
+            {
+                b.Initialize(this);
+            }
+
             paddle.Initialize();
             enemyPaddle.Initialize();
 
@@ -117,10 +126,11 @@ namespace GoalKeeper
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);        
             loseLife = Content.Load<SoundEffect>("lose_life");
             gameOver = Content.Load<SoundEffect>("game_over");
             ball.LoadContent(Content);
+            ballText = Content.Load<Texture2D>("ball");
             paddle.LoadContent(Content);
             enemyPaddle.LoadContent(Content);
             player.LoadContent(Content);
@@ -134,6 +144,7 @@ namespace GoalKeeper
 
             //Load the positions in the file
             spawnedBalls = Content.Load<List<Ball>>("locations");
+
 
         }
 
@@ -171,9 +182,11 @@ namespace GoalKeeper
             Keys[] keylist2 = { Keys.Up, Keys.Left, Keys.Right, Keys.Down };
 
             ball.Update(gameTime);
+
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
             camera.Update(mouse, view);
+
 
             unitP1.Update(player.Position.X, player.Position.Y);
             unitP2.Update(enemy.Position.X, enemy.Position.Y);
@@ -253,17 +266,17 @@ namespace GoalKeeper
             }
             else
             {
-                ball.Draw(spriteBatch);
+                ball.Draw(spriteBatch, ballText);
                 paddle.Draw(spriteBatch);
                 enemyPaddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
                 
-                //Spawn and Draw the balls on the screen
-                for(int i = 0; i < spawnedBalls.Count; i++)
+                //Spawn and Draw the balls on the screen, It's null???
+                /*for(int i = 0; i < spawnedBalls.Count; i++)
                 {
                     spawnedBalls[i].Draw(spriteBatch);
-                }
+                }*/
 
                 spriteBatch.DrawString(font, "Player 1 Score: " + Convert.ToString(player.score), new Vector2(20,0), Color.White);
                 spriteBatch.DrawString(font, "Player 2 Score: " + Convert.ToString(enemy.score), new Vector2(900, 0), Color.White);
@@ -314,7 +327,7 @@ namespace GoalKeeper
             // Restart the game if Enter is pressed
             if (endGame)
             {
-                ball.Velocity = Vector2.Zero;
+                   ball.Velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
                     //Reset the game

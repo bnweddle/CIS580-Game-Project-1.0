@@ -16,5 +16,6 @@ namespace SpawnContentExtension
         public ExternalReference<TextureContent> Texture { get; set; }
 
         public string TextureFileName { get; set; } 
+
     }
 }

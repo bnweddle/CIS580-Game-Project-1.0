@@ -16,7 +16,7 @@ namespace SpawnContentExtension {
         protected override void Write(ContentWriter output, TWrite value)
         {
             // Write the number of spawns
-            output.Write(value.Count);
+            //output.Write(value.Count);
 
             // Write the individual spawn data
             for (int i = 0; i < value.Count; i++)

@@ -79,7 +79,7 @@ namespace GoalKeeper
         /// <param name="content">The ContentManager to use</param>
         public void LoadContent(ContentManager content)
         {
-           // texture = content.Load<Texture2D>("ball");
+            //texture = content.Load<Texture2D>("ball");
             bounceX = content.Load<SoundEffect>("bounce");
         }
 
@@ -136,7 +136,7 @@ namespace GoalKeeper
         /// This method should be invoked between 
         /// SpriteBatch.Begin() and SpriteBatch.End() calls.
         /// </param>
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
             spriteBatch.Draw(texture, Bounds, Color.White);
         }

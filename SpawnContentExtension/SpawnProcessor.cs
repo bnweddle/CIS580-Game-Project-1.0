@@ -24,7 +24,6 @@ namespace SpawnContentExtension
                 s.Texture = context.BuildAsset<TextureContent, TextureContent>(tc, "TextureProcessor");
             }
 
-            // The Spawnset has been processed
             return input;
         }
     }

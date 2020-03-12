@@ -16,11 +16,11 @@ namespace GoalKeeper
     {
         protected override TRead Read(ContentReader input, TRead existingInstance)
         {
-            int numToSpawn = input.ReadInt32();
+           // int numToSpawn = input.ReadInt32();
 
             var list = new List<Ball>();
 
-            for (int i = 0; i < numToSpawn; i++)
+            for (int i = 0; i < 3; i++)
             {
                 var vector = new Vector2(
                     input.ReadInt32(),
