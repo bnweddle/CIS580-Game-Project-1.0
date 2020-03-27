@@ -60,9 +60,6 @@ namespace GoalKeeper
         Unit unitP1;
         Unit unitP2;
 
-        //For the spawning 
-        List<Ball> spawnedBalls;
-
 
         public Game1()
         {
@@ -74,7 +71,6 @@ namespace GoalKeeper
                 new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), ballText);
             player = new Player(this, new Vector2(200, 200));
             enemy = new Player(this, new Vector2(800, 200));
-            spawnedBalls = new List<Ball>();
         }
 
         /// <summary>
@@ -140,14 +136,6 @@ namespace GoalKeeper
             player2Wins = Content.Load<Texture2D>("end2");
             // TODO: use this.Content to load your game content here
 
-            //Load the positions in the file
-            spawnedBalls = Content.Load<List<Ball>>("locations");
-
-            for (int i = 0; i < spawnedBalls.Count; i++)
-            {
-                spawnedBalls[i].Initialize(this);
-            }
-
         }
 
         /// <summary>
@@ -188,11 +176,6 @@ namespace GoalKeeper
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
             camera.Update(mouse, view);
-
-            for (int i = 0; i < spawnedBalls.Count; i++)
-            {
-                spawnedBalls[i].Update(gameTime);
-            }
 
             unitP1.Update(player.Position.X, player.Position.Y);
             unitP2.Update(enemy.Position.X, enemy.Position.Y);
@@ -278,11 +261,6 @@ namespace GoalKeeper
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
 
-                //Spawn and Draw the balls on the screen
-                for (int i = 0; i < spawnedBalls.Count; i++)
-                {
-                    spawnedBalls[i].Draw(spriteBatch, ballText);
-                }
 
                 oldState = newState;
 
