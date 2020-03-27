@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using ParticleSystemStarter;
 using System;
 using System.Collections.Generic;
 
@@ -59,6 +61,26 @@ namespace GoalKeeper
         public Grid grid = new Grid();
         Unit unitP1;
         Unit unitP2;
+
+        /// <summary>
+        /// For particle effects
+        /// </summary>
+        ParticleSystem rainSystem;
+        ParticleSystem snowSystem;
+        ParticleSystem fireworkSystem;
+        ParticleSystem fireSystem;
+
+        Texture2D rainTexture;
+        Texture2D snowTexture;
+        Texture2D particleTexture;
+        Texture2D fireTexture;
+        Random random = new Random();
+
+        Song rain;
+        SoundEffect crack;
+
+        DateTime startTime;
+        TimeSpan breakDuration = TimeSpan.FromSeconds(1.0);
 
 
         public Game1()
@@ -135,6 +157,7 @@ namespace GoalKeeper
             player1Wins = Content.Load<Texture2D>("end1");
             player2Wins = Content.Load<Texture2D>("end2");
             // TODO: use this.Content to load your game content here
+            LoadParticleEffects();
 
         }
 
@@ -157,6 +180,7 @@ namespace GoalKeeper
 
             newState = Keyboard.GetState();
             mouse = Mouse.GetState();
+            //startTime = DateTime.UtcNow;
 
             BeginGame();
             // Why do I have to hit spacebar twice?
@@ -176,6 +200,12 @@ namespace GoalKeeper
             player.Update(gameTime, keylist1, ball);
             enemy.Update(gameTime, keylist2, ball);
             camera.Update(mouse, view);
+
+            snowSystem.Update(gameTime);
+            fireSystem.Update(gameTime);
+            rainSystem.Update(gameTime);
+            fireworkSystem.Update(gameTime);
+                
 
             unitP1.Update(player.Position.X, player.Position.Y);
             unitP2.Update(enemy.Position.X, enemy.Position.Y);
@@ -261,6 +291,44 @@ namespace GoalKeeper
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
 
+                
+                
+                
+                
+
+                // TODO: Add your update logic here 
+                bool raining = false;
+                //Particle Systems
+                if (newState.IsKeyDown(Keys.R))
+                {
+                    rainSystem.Draw();
+                    raining = true;          
+                }
+                if(raining)
+                {
+                    MediaPlayer.Play(rain);
+                }
+
+                if (newState.IsKeyDown(Keys.B))
+                {
+                    snowSystem.Draw();
+                }
+                else if (newState.IsKeyDown(Keys.F))
+                {
+                    fireworkSystem.Draw();
+                    crack.Play();
+                }
+
+                if (raining == false)
+                {
+                    fireSystem.Draw();
+                    MediaPlayer.Stop();
+                }
+                else if (raining)
+                {
+                    fireTexture.Dispose();
+                }
+
 
                 oldState = newState;
 
@@ -314,7 +382,7 @@ namespace GoalKeeper
             // Restart the game if Enter is pressed
             if (endGame)
             {
-                   ball.Velocity = Vector2.Zero;
+                ball.Velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
                     //Reset the game
@@ -351,6 +419,131 @@ namespace GoalKeeper
                     mute = false;
                 }              
             }
+        }
+
+        public void LoadParticleEffects()
+        {
+            // TODO: use this.Content to load your game content here
+            rainTexture = Content.Load<Texture2D>("drip");
+            snowTexture = Content.Load<Texture2D>("snowflake");
+            particleTexture = Content.Load<Texture2D>("Particle");
+            fireTexture = Content.Load<Texture2D>("Storm");
+            rain = Content.Load<Song>("raining");
+            crack = Content.Load<SoundEffect>("crack");
+            MediaPlayer.IsRepeating = true;
+
+            fireSystem = new ParticleSystem(GraphicsDevice, 25, fireTexture);
+            fireworkSystem = new ParticleSystem(GraphicsDevice, 1000, particleTexture);
+            rainSystem = new ParticleSystem(GraphicsDevice, 1000, rainTexture);
+            snowSystem = new ParticleSystem(GraphicsDevice, 1000, snowTexture);
+
+            fireworkSystem.SpawnPerFrame = 4;
+            fireSystem.SpawnPerFrame = 4;
+            rainSystem.SpawnPerFrame = 4;
+            snowSystem.SpawnPerFrame = 4;
+
+            // Set the SpawnParticle method
+            snowSystem.SpawnParticle = (ref Particle particle) =>
+            {
+                particle.Position.X = random.Next(0, 1280);
+                particle.Position.Y = random.Next(0, 768);
+                particle.Velocity.X = (float)random.NextDouble() - 0.5f;
+                particle.Velocity.Y = (float)random.Next(1, 20);
+
+                particle.Acceleration = 0.1f * new Vector2(0, (float)-random.NextDouble());
+                particle.Color = Color.Gray;
+                particle.Scale = 0.015f; //for snow
+                particle.Life = 2.0f;
+            };
+
+            // Set the SpawnParticle method
+            fireSystem.SpawnParticle = (ref Particle particle) =>
+            {
+                particle.Position = new Vector2(ball.Bounds.X, ball.Bounds.Y);
+                particle.Velocity = new Vector2(
+                    MathHelper.Lerp(-50, 50, (float)random.NextDouble()), // X between -50 and 50
+                    MathHelper.Lerp(0, 100, (float)random.NextDouble()) // Y between 0 and 100
+                    );
+                particle.Acceleration = 0.1f * new Vector2(0, (float)-random.NextDouble());
+                particle.Color = Color.OrangeRed;
+                particle.Scale = 0.015f;
+                particle.Life = 1.0f;
+            };
+
+            fireworkSystem.SpawnParticle = (ref Particle particle) =>
+            {
+
+              //  if (DateTime.UtcNow - startTime > breakDuration)
+              //      particle.Life = 0f;
+              //  else
+              //  {
+                    particle.Position.X = 400;
+                    particle.Position.Y = 400;
+                    float angle = MathHelper.Lerp(0, MathHelper.TwoPi, (float)random.NextDouble());
+                    Vector2 v = new Vector2(50, 0);
+                    particle.Velocity = Vector2.Transform(v, Matrix.CreateRotationZ(angle));
+
+                    particle.Acceleration = new Vector2(0, -0.1f);
+                    particle.Color = Color.Navy;
+                    particle.Scale = 0.015f;
+                    particle.Life = 1.0f;
+              //  }
+            };
+
+            rainSystem.SpawnParticle = (ref Particle particle) =>
+            {
+                particle.Position.X = random.Next(0, 1280); //for rain 
+                particle.Position.Y += random.Next(0, 150); //for rain
+                //This is like the wind factor
+                particle.Velocity.Y = MathHelper.Lerp(0, 100, (float)random.NextDouble()); // for rain
+
+                particle.Acceleration = 0.1f * new Vector2(0, (float)-random.NextDouble());
+                particle.Color = Color.Gray;
+                particle.Scale = 1f;
+                particle.Life = 2.0f;
+            };
+
+            // Set the UpdateParticle method
+            fireSystem.UpdateParticle = (float deltaT, ref Particle particle) =>
+            {
+                particle.Velocity += deltaT * particle.Acceleration;
+                particle.Position += deltaT * particle.Velocity;
+                particle.Scale -= deltaT;
+                particle.Life -= deltaT;
+            };
+
+            snowSystem.UpdateParticle = (float deltaT, ref Particle particle) =>
+            {
+                particle.Velocity += deltaT * particle.Acceleration;
+                particle.Position += deltaT * particle.Velocity;
+                particle.Life -= deltaT;
+
+                if (particle.Position.Y > 700)
+                {
+                    particle.Position.Y = 0; // for rain and snow
+                }
+            };
+
+            rainSystem.UpdateParticle = (float deltaT, ref Particle particle) =>
+            {
+                particle.Velocity += deltaT * particle.Acceleration;
+                particle.Position += deltaT * particle.Velocity;
+                particle.Scale -= deltaT; //for rain
+                particle.Life -= deltaT;
+
+                if (particle.Position.Y > 700)
+                {
+                    particle.Position.Y = 0; // for rain and snow
+                }
+            };
+
+            fireworkSystem.UpdateParticle = (float deltaT, ref Particle particle) =>
+            {
+                particle.Velocity += deltaT * particle.Acceleration;
+                particle.Position += deltaT * particle.Velocity;
+                particle.Scale -= deltaT;
+                particle.Life -= deltaT;
+            };
         }
 
 
