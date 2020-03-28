@@ -414,7 +414,7 @@ namespace GoalKeeper
             rainSystem = new ParticleSystem(GraphicsDevice, 1000, rainTexture);
             snowSystem = new ParticleSystem(GraphicsDevice, 1000, snowTexture);
 
-            fireworkSystem.SpawnPerFrame = 4;
+            fireworkSystem.SpawnPerFrame = 10;
             fireSystem.SpawnPerFrame = 4;
             rainSystem.SpawnPerFrame = 4;
             snowSystem.SpawnPerFrame = 4;
