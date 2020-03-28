@@ -44,11 +44,11 @@
 /processorParam:Quality=Best
 /build:bounce.wav
 
-#begin crack.wav
+#begin crackle.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:crack.wav
+/build:crackle.wav
 
 #begin DefaultFont.spritefont
 /importer:FontDescriptionImporter

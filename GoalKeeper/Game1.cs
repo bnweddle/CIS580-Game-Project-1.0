@@ -76,6 +76,7 @@ namespace GoalKeeper
         Texture2D fireTexture;
         Random random = new Random();
 
+        //This isn't working right
         Song rain;
         SoundEffect crack;
 
@@ -156,6 +157,8 @@ namespace GoalKeeper
             backgroundStart = Content.Load<Texture2D>("start");
             player1Wins = Content.Load<Texture2D>("end1");
             player2Wins = Content.Load<Texture2D>("end2");
+            particleTexture = Content.Load<Texture2D>("Particle");
+            crack = Content.Load<SoundEffect>("crackle");
             // TODO: use this.Content to load your game content here
             LoadParticleEffects();
 
@@ -201,12 +204,12 @@ namespace GoalKeeper
             enemy.Update(gameTime, keylist2, ball);
             camera.Update(mouse, view);
 
+            ///Particle Systems
             snowSystem.Update(gameTime);
             fireSystem.Update(gameTime);
             rainSystem.Update(gameTime);
             fireworkSystem.Update(gameTime);
                 
-
             unitP1.Update(player.Position.X, player.Position.Y);
             unitP2.Update(enemy.Position.X, enemy.Position.Y);
             grid.CheckCollisions();
@@ -286,27 +289,22 @@ namespace GoalKeeper
             else
             {
                 ball.Draw(spriteBatch, ballText);
-                paddle.Draw(spriteBatch);
-                enemyPaddle.Draw(spriteBatch);
-                player.Draw(spriteBatch);
-                enemy.Draw(spriteBatch);
-
-                
-                
-                
-                
+                   
 
                 // TODO: Add your update logic here 
                 bool raining = false;
+                
                 //Particle Systems
                 if (newState.IsKeyDown(Keys.R))
                 {
                     rainSystem.Draw();
-                    raining = true;          
+                    raining = true;
+                    MediaPlayer.IsMuted = false;
+                    
                 }
-                if(raining)
+                else if(!newState.IsKeyDown(Keys.R))
                 {
-                    MediaPlayer.Play(rain);
+                    MediaPlayer.IsMuted = true;
                 }
 
                 if (newState.IsKeyDown(Keys.B))
@@ -322,13 +320,16 @@ namespace GoalKeeper
                 if (raining == false)
                 {
                     fireSystem.Draw();
-                    MediaPlayer.Stop();
                 }
                 else if (raining)
                 {
                     fireTexture.Dispose();
                 }
 
+                paddle.Draw(spriteBatch);
+                enemyPaddle.Draw(spriteBatch);
+                player.Draw(spriteBatch);
+                enemy.Draw(spriteBatch);
 
                 oldState = newState;
 
@@ -429,8 +430,10 @@ namespace GoalKeeper
             particleTexture = Content.Load<Texture2D>("Particle");
             fireTexture = Content.Load<Texture2D>("Storm");
             rain = Content.Load<Song>("raining");
-            crack = Content.Load<SoundEffect>("crack");
-            MediaPlayer.IsRepeating = true;
+            crack = Content.Load<SoundEffect>("crackle");
+            MediaPlayer.Play(rain);
+
+            MediaPlayer.IsMuted = true;
 
             fireSystem = new ParticleSystem(GraphicsDevice, 25, fireTexture);
             fireworkSystem = new ParticleSystem(GraphicsDevice, 1000, particleTexture);
@@ -470,26 +473,6 @@ namespace GoalKeeper
                 particle.Life = 1.0f;
             };
 
-            fireworkSystem.SpawnParticle = (ref Particle particle) =>
-            {
-
-              //  if (DateTime.UtcNow - startTime > breakDuration)
-              //      particle.Life = 0f;
-              //  else
-              //  {
-                    particle.Position.X = 400;
-                    particle.Position.Y = 400;
-                    float angle = MathHelper.Lerp(0, MathHelper.TwoPi, (float)random.NextDouble());
-                    Vector2 v = new Vector2(50, 0);
-                    particle.Velocity = Vector2.Transform(v, Matrix.CreateRotationZ(angle));
-
-                    particle.Acceleration = new Vector2(0, -0.1f);
-                    particle.Color = Color.Navy;
-                    particle.Scale = 0.015f;
-                    particle.Life = 1.0f;
-              //  }
-            };
-
             rainSystem.SpawnParticle = (ref Particle particle) =>
             {
                 particle.Position.X = random.Next(0, 1280); //for rain 
@@ -501,6 +484,20 @@ namespace GoalKeeper
                 particle.Color = Color.Gray;
                 particle.Scale = 1f;
                 particle.Life = 2.0f;
+            };
+
+            fireworkSystem.SpawnParticle = (ref Particle particle) =>
+            {
+                particle.Position.X = mouse.Position.X;
+                particle.Position.Y = mouse.Position.Y;
+                float angle = MathHelper.Lerp(0, MathHelper.TwoPi, (float)random.NextDouble());
+                Vector2 v = new Vector2(50, 0);
+                particle.Velocity = Vector2.Transform(v, Matrix.CreateRotationZ(angle));
+
+                particle.Acceleration = new Vector2(0, -0.1f);
+                particle.Color = Color.Purple;
+                particle.Scale = 0.015f;
+                particle.Life = 1.0f;
             };
 
             // Set the UpdateParticle method
