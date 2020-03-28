@@ -80,7 +80,7 @@ namespace GoalKeeper
         Song rain;
         SoundEffect crack;
 
-        DateTime startTime;
+        DateTime startTime = DateTime.UtcNow;
         TimeSpan breakDuration = TimeSpan.FromSeconds(1.0);
 
 
@@ -157,8 +157,6 @@ namespace GoalKeeper
             backgroundStart = Content.Load<Texture2D>("start");
             player1Wins = Content.Load<Texture2D>("end1");
             player2Wins = Content.Load<Texture2D>("end2");
-            particleTexture = Content.Load<Texture2D>("Particle");
-            crack = Content.Load<SoundEffect>("crackle");
             // TODO: use this.Content to load your game content here
             LoadParticleEffects();
 
@@ -289,47 +287,15 @@ namespace GoalKeeper
             else
             {
                 ball.Draw(spriteBatch, ballText);
-                   
-
-                // TODO: Add your update logic here 
-                bool raining = false;
-                
-                //Particle Systems
-                if (newState.IsKeyDown(Keys.R))
-                {
-                    rainSystem.Draw();
-                    raining = true;
-                    MediaPlayer.IsMuted = false;
-                    
-                }
-                else if(!newState.IsKeyDown(Keys.R))
-                {
-                    MediaPlayer.IsMuted = true;
-                }
-
-                if (newState.IsKeyDown(Keys.B))
-                {
-                    snowSystem.Draw();
-                }
-                else if (newState.IsKeyDown(Keys.F))
-                {
-                    fireworkSystem.Draw();
-                    crack.Play();
-                }
-
-                if (raining == false)
-                {
-                    fireSystem.Draw();
-                }
-                else if (raining)
-                {
-                    fireTexture.Dispose();
-                }
-
                 paddle.Draw(spriteBatch);
                 enemyPaddle.Draw(spriteBatch);
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
+
+                // TODO: Add your update logic here 
+                
+
+
 
                 oldState = newState;
 
@@ -348,10 +314,19 @@ namespace GoalKeeper
                     spriteBatch.DrawString(font, "Press M to mute", new Vector2(425, 0), Color.White);
                 if(mute == true)
                     spriteBatch.DrawString(font, "Press M to unmute", new Vector2(420, 0), Color.White);
-             
+
+                spriteBatch.DrawString(font, "Hold B for Blizzard", new Vector2(0, view.Height - 20), Color.White);
+                spriteBatch.DrawString(font, "Hold R for Rain", new Vector2(0, view.Height - 40), Color.White);
+                spriteBatch.DrawString(font, "Press F for Fireworks", new Vector2(0, view.Height - 60), Color.White);
+
+
             }                
             
             spriteBatch.End();
+
+            if(beginGame && !endGame)
+                DrawParticles();
+
             base.Draw(gameTime);
         }
 
@@ -459,18 +434,17 @@ namespace GoalKeeper
                 particle.Life = 2.0f;
             };
 
-            // Set the SpawnParticle method
+            // Set the SpawnParticle method for fire
             fireSystem.SpawnParticle = (ref Particle particle) =>
             {
-                particle.Position = new Vector2(ball.Bounds.X, ball.Bounds.Y);
-                particle.Velocity = new Vector2(
-                    MathHelper.Lerp(-50, 50, (float)random.NextDouble()), // X between -50 and 50
-                    MathHelper.Lerp(0, 100, (float)random.NextDouble()) // Y between 0 and 100
-                    );
-                particle.Acceleration = 0.1f * new Vector2(0, (float)-random.NextDouble());
+
+                particle.Position = ball.Bounds.Center;
+                particle.Velocity.X = MathHelper.Lerp(0, 25, (float)random.NextDouble());
+                particle.Velocity.Y = MathHelper.Lerp(0, 100, (float)random.NextDouble());
+                particle.Acceleration = Vector2.Zero;
                 particle.Color = Color.OrangeRed;
-                particle.Scale = 0.015f;
-                particle.Life = 1.0f;
+                particle.Scale = 0.05f;
+                particle.Life = 3.0f;
             };
 
             rainSystem.SpawnParticle = (ref Particle particle) =>
@@ -500,12 +474,11 @@ namespace GoalKeeper
                 particle.Life = 1.0f;
             };
 
-            // Set the UpdateParticle method
+            // Set the UpdateParticle method for fire
             fireSystem.UpdateParticle = (float deltaT, ref Particle particle) =>
             {
                 particle.Velocity += deltaT * particle.Acceleration;
                 particle.Position += deltaT * particle.Velocity;
-                particle.Scale -= deltaT;
                 particle.Life -= deltaT;
             };
 
@@ -541,6 +514,44 @@ namespace GoalKeeper
                 particle.Scale -= deltaT;
                 particle.Life -= deltaT;
             };
+        }
+
+        public void DrawParticles()
+        {
+            bool raining = false;
+
+            //Particle Systems
+            if (newState.IsKeyDown(Keys.R))
+            {
+                rainSystem.Draw();
+                raining = true;
+                MediaPlayer.IsMuted = false;
+
+            }
+            else if (!newState.IsKeyDown(Keys.R))
+            {
+                MediaPlayer.IsMuted = true;
+            }
+
+            if (newState.IsKeyDown(Keys.B))
+            {
+                snowSystem.Draw();
+            }
+            else if (newState.IsKeyDown(Keys.F))
+            {
+                fireworkSystem.Draw();
+                crack.Play();
+            }
+
+            if (raining == false)
+            {
+                fireSystem.Draw(camera.Matrix);
+            }
+            else if (raining)
+            {
+                fireTexture.Dispose();
+                
+            }
         }
 
 

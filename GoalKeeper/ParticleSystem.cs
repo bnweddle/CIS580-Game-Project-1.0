@@ -21,6 +21,8 @@ namespace ParticleSystemStarter
     /// <param name="particle">The particle to update</param>
     public delegate void ParticleUpdater(float deltaT, ref Particle particle);
 
+
+
     class ParticleSystem
     {
         /// <summary>
@@ -59,6 +61,8 @@ namespace ParticleSystemStarter
         /// <param name="particle"></param>
         public ParticleUpdater UpdateParticle { get; set; }
 
+        public Vector2 Origin;
+
         /// <summary>
         /// Constructs a new particle system 
         /// </summary>
@@ -70,6 +74,7 @@ namespace ParticleSystemStarter
             this.particles = new Particle[size];
             this.spriteBatch = new SpriteBatch(graphicsDevice);
             this.texture = texture;
+            this.Origin = new Vector2(texture.Width / 2, texture.Height / 2);
         }
 
         /// <summary> 
@@ -109,9 +114,9 @@ namespace ParticleSystemStarter
         /// <summary>
         /// Draw the active particles in the particle system
         /// </summary>
-        public void Draw()
+        public void Draw(Matrix? transformMatrix = null)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, transformMatrix);
 
             // Iterate through the particles
             for (int i = 0; i < particles.Length; i++)
@@ -120,7 +125,7 @@ namespace ParticleSystemStarter
                 if (particles[i].Life <= 0) continue;
 
                 // Draw the individual particles
-                spriteBatch.Draw(texture, particles[i].Position, null, particles[i].Color, 0f, Vector2.Zero, particles[i].Scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(texture, particles[i].Position, null, particles[i].Color, 0f, Origin, particles[i].Scale, SpriteEffects.None, 0);
             }
 
             spriteBatch.End();

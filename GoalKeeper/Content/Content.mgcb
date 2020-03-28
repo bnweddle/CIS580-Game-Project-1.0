@@ -44,6 +44,12 @@
 /processorParam:Quality=Best
 /build:bounce.wav
 
+#begin crack.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:crack.mp3
+
 #begin crackle.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -122,6 +128,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:heart.png
+
+#begin hiss.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:hiss.wav
 
 #begin levels.png
 /importer:TextureImporter
