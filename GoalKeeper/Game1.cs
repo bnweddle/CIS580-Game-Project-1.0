@@ -371,8 +371,6 @@ namespace GoalKeeper
                     player.state = State.Idle;
                     enemy.state = State.Idle;
                     endGame = false;
-                    mute = false;
-                    SoundEffect.MasterVolume = 1.0f;
                 }
             }
         }
@@ -409,6 +407,7 @@ namespace GoalKeeper
             MediaPlayer.Play(rain);
 
             MediaPlayer.IsMuted = true;
+            MediaPlayer.IsRepeating = true;
 
             fireSystem = new ParticleSystem(GraphicsDevice, 25, fireTexture);
             fireworkSystem = new ParticleSystem(GraphicsDevice, 1000, particleTexture);
