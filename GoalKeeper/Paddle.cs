@@ -29,15 +29,15 @@ namespace GoalKeeper
 
         public void Initialize()
         {
-            Bounds.Width = 50;
-            Bounds.Height = 250;
+            Bounds.Width = 515;
+            Bounds.Height = 600;
             Bounds.X = position.X;
             Bounds.Y = position.Y;
         }
 
-        public void LoadContent(ContentManager content)
+        public void LoadContent(ContentManager content, string value)
         {
-            texture = content.Load<Texture2D>("onepixel");
+            texture = content.Load<Texture2D>(value);
         }
 
         public void Update(GameTime gameTime)
@@ -71,10 +71,19 @@ namespace GoalKeeper
             oldstate = newState;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch,bool flip)
         {
-            spriteBatch.Draw(texture, position, Bounds, Color.White);
+            if(flip)
+            {
+                SpriteEffects s = SpriteEffects.FlipHorizontally;
+                spriteBatch.Draw(texture, position, Bounds, Color.White, 0f, Vector2.Zero, 0.5f, s, 0);
+            }
+            else
+            {
+                spriteBatch.Draw(texture, position, Bounds, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+            }
+            
         }
 
-        }
+    }
 }

@@ -142,7 +142,7 @@ namespace GoalKeeper
         /// </param>
         public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            spriteBatch.Draw(texture, Bounds, Color.White);
+            spriteBatch.Draw(texture, Bounds, Color.Gray);
         }
     }
 }

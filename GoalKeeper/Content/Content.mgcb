@@ -14,18 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ../../../../../Pictures/start.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../../Pictures/start.png;start.png
-
 #begin ball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -129,11 +117,17 @@
 /processorParam:TextureFormat=Color
 /build:heart.png
 
-#begin hiss.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:hiss.wav
+#begin left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:left.png
 
 #begin levels.png
 /importer:TextureImporter
@@ -206,6 +200,18 @@
 /processorParam:Quality=Best
 /build:raining.mp3
 
+#begin right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:right.png
+
 #begin snowflake.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -217,6 +223,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:snowflake.png
+
+#begin start.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:start.png
 
 #begin storm.png
 /importer:TextureImporter

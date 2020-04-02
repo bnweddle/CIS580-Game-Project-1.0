@@ -148,8 +148,8 @@ namespace GoalKeeper
             gameOver = Content.Load<SoundEffect>("game_over");
             ball.LoadContent(Content);
             ballText = Content.Load<Texture2D>("ball");
-            paddle.LoadContent(Content);
-            enemyPaddle.LoadContent(Content);
+            paddle.LoadContent(Content, "left");
+            enemyPaddle.LoadContent(Content, "right");
             player.LoadContent(Content);
             enemy.LoadContent(Content);
             font = Content.Load<SpriteFont>("DefaultFont");
@@ -287,8 +287,8 @@ namespace GoalKeeper
             else
             {
                 ball.Draw(spriteBatch, ballText);
-                paddle.Draw(spriteBatch);
-                enemyPaddle.Draw(spriteBatch);
+                paddle.Draw(spriteBatch, false);
+                enemyPaddle.Draw(spriteBatch, true);
                 player.Draw(spriteBatch);
                 enemy.Draw(spriteBatch);
 
